@@ -1,0 +1,57 @@
+function collect_constant(chars):
+  function collect(chars', ident):
+    match chars':
+    | [] -> ([], ident)
+    | c :: rest when String.is_char(c) || String.is_digit(c) || (c = "_") ->
+      collect(rest, ident ++ c)
+    | _ -> (chars', ident)
+  in
+  match collect(chars, ""):
+  | (chars, "null") -> (chars, Null)
+  | (chars, "true") -> (chars, Bool(True))
+  | (chars, "false") -> (chars, Bool(False))
+  | (_, ident) -> println("Unknown ident: %s", ident); exit(1)
+
+
+function collect_number(chars):
+  function collect_mantissa(chars):
+    | "E" :: chars->
+      (match chars:
+      | [] -> failwith("Expected [-][digit] after E/e")
+      | "-" :: chars when c = 
+    
+  in
+  function collect_number(chars, n):
+    match chars:
+    | [] -> n
+    | c :: chars when String.is_digit(c) -> collect_number(chars, n ++ c)
+  in
+  function collect_decimal(chars, n):
+    match chars:
+    | [] -> failwith("Expected digits")
+    | "." :: chars -> collect_number(chars, ".")
+    | c :: chars when String.is_digit(c) -> collect_number(chars, c)
+  in
+  function collect(chars, n):
+    match chars:
+    | [] -> string(n)
+    | "-" :: chars -> collect_decimal(chars, "-")
+    | "." :: chars -> collect_decimal(chars, "")
+    | c :: chars when String.is_digit(c) -> collect_decimal(chars, "c")
+  in
+  collect(chars, "")
+
+
+function collect_string(chars):
+  function collect(chars', s):
+    match chars':
+    | [] -> failwith("Unclosed string")
+    | "\"" :: rest -> (rest, s)
+    | c :: rest -> collect(rest, s ++ c)
+  in
+  collect(chars, "")
+
+
+function main():
+  let chars = "false abc\"" |> String.to_chars() in
+  collect_string(chars)
