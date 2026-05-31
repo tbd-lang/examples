@@ -1,0 +1,16 @@
+function counter(n):
+  receive:
+  | Increment -> counter(n + 1)
+  | Get(sender) -> send(sender, n); counter(n)
+  | Stop -> Ok
+
+
+public function main():
+  let c = spawn(fun(): counter(0)) in
+  send(c, Increment);
+  send(c, Increment);
+  send(c, Increment);
+  send(c, Get(self()));
+  receive:
+  | n -> Io.printfln("Count: ~p", [n]); Ok;
+  send(c, Stop)
