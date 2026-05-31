@@ -1,0 +1,20 @@
+external printf(f, args): io:format
+function printfln(f, args): printf(f ++ "\n", args)
+function println(s): printfln(s, [])
+
+
+function a(sender):
+  receive:
+  | Message -> 
+    println("Received message");
+    send(sender, Done)
+
+
+public function main():
+  let sender = self() in
+  let a' = spawn(fun(): a(sender)) in
+  send(a', Message);
+  receive:
+  | Done ->
+    println("Received response");
+    Ok
