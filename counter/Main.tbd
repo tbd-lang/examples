@@ -2,7 +2,7 @@ function counter(n):
   receive:
   | Increment -> counter(n + 1)
   | Get(sender) -> send(sender, n); counter(n)
-  | Stop -> Ok
+  | Stop -> ()
 
 
 public function main():
@@ -12,5 +12,5 @@ public function main():
   send(c, Increment);
   send(c, Get(self()));
   receive:
-  | n -> Io.printfln("Count: ~p", [n]); Ok;
+  | n -> Io.printfln("Count: ~p", [n]);
   send(c, Stop)

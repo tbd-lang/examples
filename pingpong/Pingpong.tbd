@@ -1,0 +1,25 @@
+external sleep(ms): timer:sleep
+
+
+function ping(pong_pid):
+  receive:
+  | Pong -> Io.println("Ping"); send(pong_pid, Ping); ping(pong_pid)
+  | Stop -> ()
+
+
+function pong_init():
+  function pong(ping_pid):
+    receive:
+    | Ping -> Io.println("Pong"); send(ping_pid, Pong); pong(ping_pid)
+    | Stop -> ()
+  in
+  receive:
+  | Init(ping_pid) -> pong(ping_pid)
+
+
+public function start():
+  let pong_pid = spawn(fun(): pong_init()) in
+  let ping_pid = spawn(fun(): ping(pong_pid)) in
+  send(pong_pid, Init(ping_pid)); send(ping_pid, Pong);
+  sleep(1000);
+  send(ping_pid, Stop); send(pong_pid, Stop)

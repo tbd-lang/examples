@@ -1,0 +1,4 @@
+public function loop(pong):
+  receive:
+  | Pong -> Io.println("Ping"); send(pong, Ping); loop(pong)
+  | Stop -> ()
