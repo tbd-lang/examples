@@ -1,4 +1,4 @@
-external trim(s): string:trim
+public external trim(s): string:trim
 
 external erlang_to_integer(s): string:to_integer
-function to_integer(s): let {i, _} = erlang_to_integer(s) in i
+public function to_integer(s): let {i, _} = erlang_to_integer(s) in i

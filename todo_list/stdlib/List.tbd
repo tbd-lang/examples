@@ -4,7 +4,7 @@
 ## Example:
 ##   length([1, 2, 3])  # => 3
 ##   length([])         # => 0
-function length(l):
+public function length(l):
   function aux(l_, n):
     match l_:
     | [] -> n
@@ -19,7 +19,7 @@ function length(l):
 ## Example:
 ##   rev([1, 2, 3])  # => [3, 2, 1]
 ##   rev([])         # => []
-function rev(l):
+public function rev(l):
   function aux(l_, out):
     match l_:
     | [] -> out
@@ -34,7 +34,7 @@ function rev(l):
 ## Example:
 ##   append([1, 2], [3, 4])  # => [1, 2, 3, 4]
 ##   append([], [1, 2])      # => [1, 2]
-function append(l1, l2):
+public function append(l1, l2):
   match l1:
   | [] -> l2
   | hd :: tl -> hd :: append(tl, l2)
@@ -46,7 +46,7 @@ function append(l1, l2):
 ## Example:
 ##   map(fun(x): x * 2, [1, 2, 3])  # => [2, 4, 6]
 ##   map(fun(x): x + 1, [])         # => []
-function map(f, l):
+public function map(f, l):
   function aux(l_, out):
     match l_:
     | [] -> rev(out)
@@ -61,7 +61,7 @@ function map(f, l):
 ## Example:
 ##   filter(fun(x): x > 2, [1, 2, 3, 4])  # => [3, 4]
 ##   filter(fun(x): x = 0, [1, 2, 3])     # => []
-function filter(f, l):
+public function filter(f, l):
   function aux(l_, out):
     match l_:
     | [] -> rev(out)
@@ -79,7 +79,7 @@ function filter(f, l):
 ## Example:
 ##   iter(fun(x): tbd__print(x), [1, 2, 3])  # prints 1, 2, 3
 ##   iter(fun(x): tbd__print(x), [])         # does nothing
-function iter(f, l):
+public function iter(f, l):
   match l:
   | [] -> ()
   | hd :: tl ->
@@ -92,7 +92,7 @@ function iter(f, l):
 ## Example:
 ##   fold_left(fun(a, b): a + b, 0, [1, 2, 3])   # => 6
 ##   fold_left(fun(a, b): b :: a, [], [1, 2, 3]) # => [3, 2, 1]
-function fold_left(f, acc, l):
+public function fold_left(f, acc, l):
   match l:
   | [] -> acc
   | hd :: tl ->
@@ -105,7 +105,7 @@ function fold_left(f, acc, l):
 ## Example:
 ##   fold_right(fun(a, b): a + b, [1, 2, 3], 0)   # => 6
 ##   fold_right(fun(a, b): a :: b, [1, 2, 3], []) # => [1, 2, 3]
-function fold_right(f, l, acc):
+public function fold_right(f, l, acc):
   match l:
   | [] -> acc
   | hd :: tl ->
@@ -118,7 +118,7 @@ function fold_right(f, l, acc):
 ## Example:
 ##   sum([1, 2, 3, 4])  # => 10
 ##   sum([])            # => 0
-function sum(l):
+public function sum(l):
   fold_left(fun(a, b): a + b, 0, l)
 
 
@@ -128,7 +128,7 @@ function sum(l):
 ## Example:
 ##   product([1, 2, 3, 4])  # => 24
 ##   product([])            # => 1
-function product(l):
+public function product(l):
   fold_left(fun(a, b): a * b, 1, l)
 
 
@@ -138,7 +138,7 @@ function product(l):
 ## Example:
 ##   any(fun(x): x > 2, [1, 2, 3])  # => True
 ##   any(fun(x): x > 9, [1, 2, 3])  # => False
-function any(f, l):
+public function any(f, l):
   match l:
   | [] -> False
   | hd :: tl ->
@@ -153,7 +153,7 @@ function any(f, l):
 ## Example:
 ##   all(fun(x): x > 0, [1, 2, 3])  # => True
 ##   all(fun(x): x > 1, [1, 2, 3])  # => False
-function all(f, l):
+public function all(f, l):
   match l:
   | [] -> True
   | hd :: tl ->
@@ -168,7 +168,7 @@ function all(f, l):
 ## Example:
 ##   contains(2, [1, 2, 3])  # => True
 ##   contains(9, [1, 2, 3])  # => False
-function contains(x, l):
+public function contains(x, l):
   match l:
   | [] -> False
   | hd :: tl ->
@@ -183,7 +183,7 @@ function contains(x, l):
 ## Example:
 ##   nth([10, 20, 30], 1)  # => Some(20)
 ##   nth([10, 20, 30], 5)  # => None
-function nth(l, n):
+public function nth(l, n):
   match l:
   | [] -> None
   | hd :: tl ->
@@ -198,7 +198,7 @@ function nth(l, n):
 ## Example:
 ##   take(2, [1, 2, 3, 4])  # => [1, 2]
 ##   take(9, [1, 2])        # => [1, 2]
-function take(n, l):
+public function take(n, l):
   function aux(n_, l_, out):
     match n_ <= 0:
     | True -> rev(out)
@@ -216,7 +216,7 @@ function take(n, l):
 ## Example:
 ##   drop(2, [1, 2, 3, 4])  # => [3, 4]
 ##   drop(9, [1, 2])        # => []
-function drop(n, l):
+public function drop(n, l):
   match n <= 0:
   | True -> l
   | False ->
@@ -231,7 +231,7 @@ function drop(n, l):
 ## Example:
 ##   zip([1, 2, 3], ["a", "b", "c"])  # => [(1, "a"), (2, "b"), (3, "c")]
 ##   zip([1, 2, 3], ["a"])            # => [(1, "a")]
-function zip(l1, l2):
+public function zip(l1, l2):
   function aux(l1_, l2_, out):
     match l1_:
     | [] -> rev(out)
@@ -249,7 +249,7 @@ function zip(l1, l2):
 ## Example:
 ##   range(0, 5)  # => [0, 1, 2, 3, 4]
 ##   range(3, 3)  # => []
-function range(lo, hi):
+public function range(lo, hi):
   function aux(i, out):
     match i < lo:
     | True -> out
@@ -264,7 +264,7 @@ function range(lo, hi):
 ## Example:
 ##   max([3, 1, 4, 1, 5])  # => Some(5)
 ##   max([])               # => None
-function max(l):
+public function max(l):
   match l:
   | [] -> None
   | hd :: tl ->
@@ -282,7 +282,7 @@ function max(l):
 ## Example:
 ##   min([3, 1, 4, 1, 5])  # => Some(1)
 ##   min([])               # => None
-function min(l):
+public function min(l):
   match l:
   | [] -> None
   | hd :: tl ->

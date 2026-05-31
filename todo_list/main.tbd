@@ -1,3 +1,6 @@
+import Stdlib.*
+
+
 function print_item({index, state, name}):
   match state:
   | Not_done -> Io.printfln("~w. [ ] ~s", [index, name])
@@ -24,6 +27,7 @@ function reset(): Io.println("\ec")
 
 
 function loop(index, items):
+  Test.Test.test();
   reset();
   Io.println("Todo List");
   list_items(List.rev(items));
@@ -44,5 +48,5 @@ function loop(index, items):
   | _ -> Io.println("not an action"); loop(index, items)
 
 
-function main():
+public function main():
   loop(1, [])
