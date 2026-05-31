@@ -1,9 +1,13 @@
-external sleep(ms): timer:sleep
-
-
 public function start():
-  let pong = spawn(fun(): Pong.loop()) in
+  # Spawn processes
+  let pong = spawn(fun(): Pong.init()) in
   let ping = spawn(fun(): Ping.loop(pong)) in
+
+  # Initialise Pong and kick off chain
   send(pong, Init(ping)); send(ping, Pong);
-  sleep(1000);
+
+  # self sleeps for 1000 ms
+  Time.sleep(1000);
+
+  # Tell both Ping and Pong to stop
   send(ping, Stop); send(pong, Stop)
