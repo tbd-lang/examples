@@ -1,0 +1,10 @@
+function tokenize(chars, tokens):
+  match chars:
+  | [] -> tokens
+  | 'a'..'z' :: chars' -> tokenize(chars', Char())
+
+
+public function main():
+  match File.read_file("Test.tbd"):
+  | Ok(contents) -> Io.printf("~s\n", [contents])
+  | Error(error) -> Io.printf("~s\n", [error])

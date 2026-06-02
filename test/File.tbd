@@ -1,0 +1,5 @@
+external erlang_read_file(filename): file:read_file
+public function read_file(filename):
+  match erlang_read_file(filename):
+  | {Ok, contents} -> Ok(contents)
+  | {Error, error} -> Error(error)

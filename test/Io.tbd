@@ -1,0 +1,4 @@
+public external printf(f, args): io:format
+public function print(s): printf(s, [])
+public function printfln(f, args): printf(f ++ "\n", args)
+public function println(s): printfln("~s", [s])
