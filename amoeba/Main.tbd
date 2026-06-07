@@ -1,0 +1,27 @@
+import Stdlib.Tcp
+import Stdlib.Io
+import Stdlib.Time
+
+
+function server(port):
+  let! listener = Tcp.listen(port) in
+  let! connection = Tcp.accept(listener) in
+  let! {address, port} = Socket.peername(connection) in
+  Io.printfln("new connection: ~p:~p", [address, port]);        
+  let! _ = Tcp.shutdown(connection) in
+  let! _ = Tcp.close(listener) in
+  Ok(())
+
+
+function client(port):
+  match Tcp.connect("localhost", port):
+  | Error(e) -> Io.printfln("client connection error: ~s", [e])
+  | Ok(_) -> Io.println("connected to server")
+
+
+public function main():
+  let port = 42069 in
+  spawn(fun(): server(port));
+  Time.sleep(500);
+  client(port);
+  Time.sleep(2000)

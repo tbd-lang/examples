@@ -1,0 +1,33 @@
+external erlang_listen(port, opts): gen_tcp:listen
+public function listen(port):
+  match erlang_listen(port, [{Reuseaddr, True}]):
+  | Error(e) -> Error(e)
+  | Ok(listener) -> Ok(listener)
+
+
+external erlang_accept(listener): gen_tcp:accept
+public function accept(listener):
+  match erlang_accept(listener):
+  | Error(e) -> Error(e)
+  | Ok(connection) -> Ok(connection)
+
+
+external erlang_connect(host, port, opts): gen_tcp:connect
+public function connect(host, port):
+  match erlang_connect(host, port, []):
+  | Error(e) -> Error(e)
+  | Ok(connection) -> Ok(connection)
+
+
+external erlang_close(listener): gen_tcp:close
+public function close(listener):
+  match erlang_close(listener):
+  | Error(e) -> Error(e)
+  | Ok -> Ok(())
+
+
+external erlang_shutdown(socket, how): gen_tcp:shutdown
+public function shutdown(socket):
+  match erlang_shutdown(socket, Read_write):
+  | Error(e) -> Error(e)
+  | Ok -> Ok(())
