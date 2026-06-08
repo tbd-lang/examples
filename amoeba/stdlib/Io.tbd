@@ -1,6 +1,6 @@
 public external printf(f, args): io:format
-public function print(s): printf(s, [])
-public function printfln(f, args): printf(f ++ "\n", args)
+public function print(s): printf(String.btl(s), [])
+public function printfln(f, args): printf(String.btl(f ++ "\n"), args)
 public function println(s): printfln(s, [])
 
 external erlang_input(prompt): io:get_line
