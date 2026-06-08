@@ -1,7 +1,197 @@
-public external trim(s): string:trim
+## Returns the byte byte_length of a binary string.
+## Type: fun(string) -> int
+##
+## Example:
+##   byte_length("hello")  # => 5
+##   byte_length("")        # => 0
+public external byte_length(s): "erlang:byte_size"
 
-external erlang_to_integer(s): string:to_integer
-public function to_integer(s): let {i, _} = erlang_to_integer(s) in i
 
-public external btl(b): erlang:binary_to_list
-public external ltb(b): erlang:list_to_binary
+## Trims leading and trailing whitespace from a binary string.
+## Type: fun(string) -> string
+##
+## Example:
+##   trim("  hello  ")  # => "hello"
+public external trim(s): "string:trim"
+
+
+## Trims leading whitespace from a binary string.
+## Type: fun(string) -> string
+##
+## Example:
+##   trim_left("  hello  ")  # => "hello  "
+public external trim_left(s): "string:trim_leading"
+
+
+## Trims trailing whitespace from a binary string.
+## Type: fun(string) -> string
+##
+## Example:
+##   trim_right("  hello  ")  # => "  hello"
+public external trim_right(s): "string:trim_trailing"
+
+
+## Converts all characters to uppercase.
+## Type: fun(string) -> string
+##
+## Example:
+##   upper("hello")  # => "HELLO"
+public external upper(s): "string:uppercase"
+
+
+## Converts all characters to lowercase.
+## Type: fun(string) -> string
+##
+## Example:
+##   lower("HELLO")  # => "hello"
+public external lower(s): "string:lowercase"
+
+
+## Reverses the characters of a binary string.
+## Type: fun(string) -> string
+##
+## Example:
+##   reverse("abc")  # => "cba"
+public external reverse(s): "string:reverse"
+
+
+## Returns true if s contains the given substring.
+## Type: fun(string, string) -> bool
+##
+## Example:
+##   contains("foobar", "oba")  # => True
+##   contains("foobar", "xyz")  # => False
+external erlang_match(s, sub): "binary:match"
+public function contains(s, sub):
+  match erlang_match(s, sub):
+  | Nomatch -> False
+  | _ -> True
+
+
+## Returns Some(index) of the first occurrence of sub in s, or None.
+## Type: fun(string, string) -> option[int]
+##
+## Example:
+##   find("foobar", "bar")  # => Some(3)
+##   find("foobar", "xyz")  # => None
+external erlang_find(s, sub): "binary:match"
+public function find(s, sub):
+  match erlang_find(s, sub):
+  | Nomatch -> None
+  | {pos, _} -> Some(pos)
+
+
+## Returns true if s starts with the given prefix.
+## Type: fun(string, string) -> bool
+##
+## Example:
+##   starts_with("foobar", "foo")  # => True
+##   starts_with("foobar", "bar")  # => False
+public function starts_with(s, prefix):
+  let plen = byte_length(prefix) in
+  match byte_length(s) >= plen:
+  | False -> False
+  | True ->
+    match slice(s, 0, plen) = prefix:
+    | True -> True
+    | False -> False
+
+
+## Returns true if s ends with the given suffix.
+## Type: fun(string, string) -> bool
+##
+## Example:
+##   ends_with("foobar", "bar")  # => True
+##   ends_with("foobar", "foo")  # => False
+public function ends_with(s, suffix):
+  let slen = byte_length(s) in
+  let suflen = byte_length(suffix) in
+  match slen >= suflen:
+  | False -> False
+  | True ->
+    match slice(s, slen - suflen, suflen) = suffix:
+    | True -> True
+    | False -> False
+
+
+## Splits s on each occurrence of sep, returning a list of binaries.
+## Type: fun(string, string) -> list[string]
+##
+## Example:
+##   split("a,b,c", ",")  # => ["a", "b", "c"]
+##   split("hello", ",")  # => ["hello"]
+external erlang_split(s, sep, opts): "binary:split"
+public function split(s, sep):
+  erlang_split(s, sep, [Global])
+
+
+## Returns the substring of s from byte position start with byte byte_length len.
+## Type: fun(string, int, int) -> string
+##
+## Example:
+##   slice("foobar", 3, 3)  # => "bar"
+##   slice("foobar", 0, 3)  # => "foo"
+public external slice(s, start, len): "binary:part"
+
+
+## Replaces all occurrences of old in s with new.
+## Type: fun(string, string, string) -> string
+##
+## Example:
+##   replace("aabbcc", "bb", "XX")  # => "aaXXcc"
+##   replace("hello", "x", "y")     # => "hello"
+external erlang_replace(s, old, new, opts): "binary:replace"
+public function replace(s, old, new):
+  erlang_replace(s, old, new, [Global])
+
+
+## Converts an integer to its decimal string representation.
+## Type: fun(int) -> string
+##
+## Example:
+##   from_integer(42)  # => "42"
+public external from_integer(n): "erlang:integer_to_binary"
+
+
+## Parses a decimal string to an integer. Returns Some(n) or None on failure.
+## Type: fun(string) -> option[int]
+##
+## Example:
+##   to_integer("42")   # => Some(42)
+##   to_integer("abc")  # => None
+external erlang_to_integer(s): "erlang:binary_to_integer"
+public function to_integer(s):
+  match erlang_to_integer(s):
+  | Error(_) -> None
+  | n -> Some(n)
+
+
+## Converts a float to its string representation.
+## Type: fun(float) -> string
+##
+## Example:
+##   from_float(3.14)  # => "3.14"
+public external from_float(f): "erlang:float_to_binary"
+
+
+## Joins a list of strings with sep between each element.
+## Type: fun(list[string], string) -> string
+##
+## Example:
+##   join(["a", "b", "c"], ", ")  # => "a, b, c"
+##   join([], ", ")               # => ""
+public function join(parts, sep):
+  match parts:
+  | [] -> ""
+  | hd :: tl ->
+    List.fold_left(fun(acc, s): acc ++ sep ++ s, hd, tl)
+
+
+## Converts a binary string to a list of bytes.
+## Type: fun(string) -> list[int]
+public external to_bytes(s): "erlang:binary_to_list"
+
+
+## Converts a list of bytes to a binary string.
+## Type: fun(list[int]) -> string
+public external from_bytes(bs): "erlang:list_to_binary"

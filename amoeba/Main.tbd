@@ -1,44 +1,4 @@
-import Stdlib.Tcp
-import Stdlib.Io
-import Stdlib.Time
-
-
-function server(host, port):
-  let! listener = Tcp.listen(host, port) in
-  let! connection = Tcp.accept(listener) in
-  let! {address, port} = Socket.peername(connection) in
-  Io.printfln("[server] new connection: ~p:~p", [address, port]);
-
-  let! message = Tcp.read(connection) in
-  Io.printfln("[server] received message: ~s", [message]);
-
-  let! _ = Tcp.write(connection, "Hello from server!") in
-  Time.sleep(1000);
-
-  let! _ = Tcp.shutdown(connection) in
-  Tcp.close(listener)
-
-
-function client(host, port):
-  let! connection = Tcp.connect(host, port) in
-
-  match Tcp.write(connection, "Hello from client!"):
-  | Error(e) -> Io.printfln("[client] error: ~s", [e])
-  | Ok(()) -> ();
-
-  match Tcp.read(connection):
-  | Error(e) -> Io.printfln("[client] error: ~s", [e])
-  | Ok(response) ->
-    Io.printfln("[client] received response: ~s", [response]);
-    Ok(())
-
-
-
 public function main():
   let {host, port} = {{127, 0, 0, 1}, 42069} in
-
-  spawn(fun(): server(host, port));
-  Time.sleep(500);
-
-  client(host, port);
-  Time.sleep(2000)
+  let server = Http_server.new(host, port) in
+  Http_server.start(server)

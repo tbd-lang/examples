@@ -1,0 +1,14 @@
+public function map_error(f, result):
+  match result:
+  | Error(error) -> Error(f(error))
+  | Ok(value) -> Ok(value)
+
+
+public function map(f, result):
+  match result:
+  | Error(error) -> Error(error)
+  | Ok(value) -> Ok(f(value))
+
+
+public function log_error(result):
+  map_error(fun(e): Logging.error("~s", [e]), result)

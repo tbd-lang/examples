@@ -1,0 +1,43 @@
+public function new(host, port):
+  Http_server(host, port)
+
+
+public function start(http_server):
+  let Http_server(host, port) = http_server in
+  match Tcp.listen(host, port):
+  | Error(e) ->
+    Logging.error("Failed to bind to socket: ~s", [e]);
+    Process.exit(e)
+  | Ok(listener) -> accept(listener)
+
+
+function accept(listener):
+  match Tcp.accept(listener):
+  | Error(e) ->
+    Logging.error("Failed to accept connection: ~s", [e]);
+    accept(listener)
+  | Ok(connection) ->
+    spawn(fun(): handle(connection));
+    accept(listener)
+
+
+function handle(connection):
+  match Tcp.read(connection):
+  | Error(e) -> Logging.error("Failed to read from connection: ~s", [e])
+  | Ok(data) -> parse(connection, data)
+
+
+function parse(connection, data):
+  match Http_request.parse(data):
+  | None -> Logging.error("Failed to parse http request")
+  | Some(request) ->
+    Http_request.inspect(request);
+    respond(connection)
+
+
+function respond(connection):
+  match Tcp.write(connection, "HTTP/1.1 200 OK\r\n\r\n"):
+  | Error(e) -> Logging.error("Failed to write to connection: ~s", [e])
+  | Ok(_) ->
+    Tcp.close(connection);
+    Logging.info("Completed http connection")

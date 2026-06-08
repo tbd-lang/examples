@@ -1,0 +1,70 @@
+public function new(path, method, headers, body):
+  Http_request(path, method, headers, body)
+
+
+public function inspect(Http_request(path, method, headers, body)):
+  Io.printfln("path: ~s", [path]);
+  Io.printfln("method: ~s", [method]);
+  List.iter(fun({key, value}): Io.printfln("~s: ~s", [key, value]), headers);
+  match body:
+  | Some(body) -> Io.printfln("body: ~s", [body])
+  | None -> ()
+
+
+function parse_header(line):
+  match String.find(line, ":"):
+  | None -> None
+  | Some(pos) ->
+    let key = String.trim(String.slice(line, 0, pos)) in
+    let value = String.trim(String.slice(line, pos + 1, String.byte_length(line) - pos - 1)) in
+    Some({key, value})
+
+
+function parse_headers(lines):
+  function aux(lines, out):
+    match lines:
+    | [] -> List.rev(out)
+    | hd :: tl ->
+      match parse_header(hd):
+      | None -> aux(tl, out)
+      | Some(h) -> aux(tl, h :: out)
+  in
+  aux(lines, [])
+
+
+function non_empty(s):
+  match String.byte_length(s) = 0:
+  | True -> None
+  | False -> Some(s)
+
+function parse_request_line(line):
+  match String.split(line, " "):
+  | method :: path :: _ -> Some({method, path})
+  | _ -> None
+
+public function parse(raw):
+  Logging.debug("Parsing raw request: ~s", [raw]);
+  match String.split(raw, "\r\n\r\n"):
+  | head :: rest ->
+    let body =
+      match rest:
+      | b :: _ -> non_empty(b)
+      | [] -> None
+    in
+    let lines = String.split(head, "\r\n") in
+    (match lines:
+    | request_line :: header_lines ->
+      Logging.debug("Request line: ~s", [request_line]);
+      match parse_request_line(request_line):
+      | None ->
+        Logging.error("Failed to parse request line: ~s", [request_line]);
+        None
+      | Some({method, path}) ->
+        let headers = parse_headers(header_lines) in
+        Some(Http_request(path, method, headers, body))
+    | _ ->
+      Logging.error("No lines found in request head: ~s", [head]);
+      None)
+  | _ ->
+    Logging.error("Failed to split on CRLFCRLF, raw: ~s", [raw]);
+    None

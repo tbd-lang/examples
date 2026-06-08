@@ -1,48 +1,47 @@
-external erlang_listen(port, opts): gen_tcp:listen
+external erlang_listen(port, opts): "gen_tcp:listen"
 public function listen(host, port):
   match erlang_listen(
-    port, [Binary, {Reuseaddr, True}, {Ip, host}, {Active, False}]
-  ):
+    port, [Binary, {Reuseaddr, True}, {Ip, host}, {Active, False}]):
   | Error(e) -> Error(e)
   | Ok(listener) -> Ok(listener)
 
 
-external erlang_accept(listener): gen_tcp:accept
+external erlang_accept(listener): "gen_tcp:accept"
 public function accept(listener):
   match erlang_accept(listener):
   | Error(e) -> Error(e)
   | Ok(connection) -> Ok(connection)
 
 
-external erlang_connect(host, port, opts): gen_tcp:connect
+external erlang_connect(host, port, opts): "gen_tcp:connect"
 public function connect(host, port):
   match erlang_connect(host, port, [Binary, {Active, False}]):
   | Error(e) -> Error(e)
   | Ok(connection) -> Ok(connection)
 
 
-external erlang_write(socket, packet): gen_tcp:send
+external erlang_write(socket, packet): "gen_tcp:send"
 public function write(socket, packet):
   match erlang_write(socket, packet):
   | Error(e) -> Error(e)
   | Ok -> Ok(())
 
 
-external erlang_read(socket, length): gen_tcp:recv
+external erlang_read(socket, length): "gen_tcp:recv"
 public function read(socket):
   match erlang_read(socket, 0):
   | Error(e) -> Error(e)
   | Ok(data) -> Ok(data)
 
 
-external erlang_close(listener): gen_tcp:close
+external erlang_close(listener): "gen_tcp:close"
 public function close(listener):
   match erlang_close(listener):
   | Error(e) -> Error(e)
   | Ok -> Ok(())
 
 
-external erlang_shutdown(socket, how): gen_tcp:shutdown
+external erlang_shutdown(socket, how): "gen_tcp:shutdown"
 public function shutdown(socket):
   match erlang_shutdown(socket, Read_write):
   | Error(e) -> Error(e)
