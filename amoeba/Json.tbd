@@ -1,12 +1,8 @@
-pub fun test() =
-  [ "null", "true", "false" ]
-  |> List.map(fun(c) -> String.to_bytes(c) |> parse())
-  |> List.iter(fun({_, j}) -> Io.printfln("~s", [inspect_json(j)]))
-
-
-fun parse(chars) =
-  when chars is
-  | c :: _ and c >= 'a' && c <= 'z' -> parse_ident(chars)
+fun inspect_json(json) =
+  when json is
+  | JsonNull -> "JsonNull"
+  | JsonBool(True) -> "JsonBool(true)"
+  | JsonBool(False) -> "JsonBool(false)"
 
 
 fun parse_ident(chars) =
@@ -28,8 +24,12 @@ fun parse_ident(chars) =
   {chars, ident}
 
 
-fun inspect_json(json) =
-  when json is
-  | JsonNull -> "JsonNull"
-  | JsonBool(True) -> "JsonBool(true)"
-  | JsonBool(False) -> "JsonBool(false)"
+fun parse(chars) =
+  when chars is
+  | c :: _ and c >= 'a' && c <= 'z' -> parse_ident(chars)
+
+
+pub fun test() =
+  [ "null", "true", "false" ]
+  |> List.map(fun(c) -> String.to_bytes(c) |> parse())
+  |> List.iter(fun({_, j}) -> Io.printfln("~s", [inspect_json(j)]))
