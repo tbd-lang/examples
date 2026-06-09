@@ -1,8 +1,8 @@
 fun inspect_json(json) =
   when json is
-  | JsonNull -> "JsonNull"
-  | JsonBool(True) -> "JsonBool(true)"
-  | JsonBool(False) -> "JsonBool(false)"
+  | Json_null -> "Json_null"
+  | Json_bool(True) -> "Json_bool(true)"
+  | Json_bool(False) -> "Json_bool(false)"
 
 
 fun parse_ident(chars) =
@@ -16,9 +16,9 @@ fun parse_ident(chars) =
   let {chars, ident} = aux(chars, []) in
   let ident =
     when ident is
-    | "null" -> JsonNull
-    | "true" -> JsonBool(True)
-    | "false" -> JsonBool(False)
+    | "null" -> Json_null
+    | "true" -> Json_bool(True)
+    | "false" -> Json_bool(False)
     | ident -> ident
   in
   {chars, ident}
