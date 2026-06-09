@@ -3,6 +3,7 @@ fun inspect_json(json) =
   | Json_null -> "Json_null"
   | Json_bool(True) -> "Json_bool(true)"
   | Json_bool(False) -> "Json_bool(false)"
+  | Json_string(s) -> "Json_string(" ++ s ++ ")"
 
 
 fun parse_ident(chars) =
@@ -24,12 +25,28 @@ fun parse_ident(chars) =
   {chars, ident}
 
 
-fun parse(chars) =
+fun parse_string(chars) =
+  fun aux(chars, acc) =
+    when chars is
+    | [] -> Process.exit(Unclosed_string)
+    | '"' :: chars -> {chars, Json_string(acc)}
+    | c :: chars -> aux(chars, acc ++ c)
+  in
+  aux(chars, "")
+
+
+fun parse(chars, tokens) =
   when chars is
-  | c :: _ and c >= 'a' && c <= 'z' -> parse_ident(chars)
+  | [] -> tokens
+  | c :: _ and c >= 'a' && c <= 'z' ->
+    let {chars, token} = parse_ident(chars) in
+    parse(chars, token :: tokens)
+  | '"' :: chars ->
+    let {chars, token} = parse_string(chars) in
+    parse(chars, token :: tokens)
 
 
 pub fun test() =
-  [ "null", "true", "false" ]
-  |> List.map(fun(c) -> String.to_bytes(c) |> parse())
-  |> List.iter(fun({_, j}) -> Io.printfln("~s", [inspect_json(j)]))
+  [ "null", "true", "false", "\"hello world\"" ]
+  |> List.map(fun(c) -> parse(String.to_bytes(c), []))
+  |> List.iter(fun(t) -> Io.printfln("~s", [inspect_json(t)]))

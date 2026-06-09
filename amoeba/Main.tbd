@@ -1,8 +1,1 @@
-pub fun main() =
-  let {host, port} = {{127, 0, 0, 1}, 42069} in
-  let port =
-    when port is
-    | x and x >= 0 && x <= 65565 -> x
-  in
-  let server = Http_server.new(host, port) in
-  Http_server.start(server)
+pub fun main() = "\""
