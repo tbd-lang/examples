@@ -1,43 +1,42 @@
-public function new(host, port):
+pub fun new(host, port) =
   Http_server(host, port)
 
 
-public function start(http_server):
+pub fun start(http_server) =
   let Http_server(host, port) = http_server in
-  match Tcp.listen(host, port):
+  when Tcp.listen(host, port) is
   | Error(e) ->
-    Logging.error("Failed to bind to socket: ~s", [e]);
+    Logging.error("Failed to bind to socket = ~s", [e]) then
     Process.exit(e)
   | Ok(listener) -> accept(listener)
 
-
-function accept(listener):
-  match Tcp.accept(listener):
+fun accept(listener) =
+  when Tcp.accept(listener) is
   | Error(e) ->
-    Logging.error("Failed to accept connection: ~s", [e]);
+    Logging.error("Failed to accept connection = ~s", [e]) then
     accept(listener)
   | Ok(connection) ->
-    spawn(fun(): handle(connection));
+    spawn(fun() -> handle(connection)) then
     accept(listener)
 
 
-function handle(connection):
-  match Tcp.read(connection):
-  | Error(e) -> Logging.error("Failed to read from connection: ~s", [e])
+fun handle(connection) =
+  when Tcp.read(connection) is
+  | Error(e) -> Logging.error("Failed to read from connection = ~s", [e])
   | Ok(data) -> parse(connection, data)
 
 
-function parse(connection, data):
-  match Http_request.parse(data):
+fun parse(connection, data) =
+  when Http_request.parse(data) is
   | None -> Logging.error("Failed to parse http request")
   | Some(request) ->
-    Http_request.inspect(request);
+    Http_request.inspect(request) then
     respond(connection)
 
 
-function respond(connection):
-  match Tcp.write(connection, "HTTP/1.1 200 OK\r\n\r\n"):
-  | Error(e) -> Logging.error("Failed to write to connection: ~s", [e])
+fun respond(connection) =
+  when Tcp.write(connection, "HTTP/1.1 200 OK\r\n\r\n") is
+  | Error(e) -> Logging.error("Failed to write to connection = ~s", [e])
   | Ok(_) ->
-    Tcp.close(connection);
+    Tcp.close(connection) then
     Logging.info("Completed http connection")

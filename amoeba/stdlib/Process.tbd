@@ -1,1 +1,1 @@
-public external exit(reason): "erlang:exit"
+pub extern exit(reason) = "erlang:exit"

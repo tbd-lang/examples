@@ -1,19 +1,19 @@
-public function info(message, args):
+pub fun info(message, args) =
   Io.printfln("[Inf] " ++ message, args)
 
-public function info(message):
+pub fun info(message) =
   Io.printfln("[Inf] " ++ message, [])
 
 
-public function error(message, args):
+pub fun error(message, args) =
   Io.printfln("[Err] " ++ message, args)
 
-public function error(message):
+pub fun error(message) =
   Io.printfln("[Err] " ++ message, [])
 
 
-public function debug(message, args):
+pub fun debug(message, args) =
   Io.printfln("[Dbg] " ++ message, args)
 
-public function debug(message):
+pub fun debug(message) =
   Io.printfln("[Dbg] " ++ message, [])

@@ -1,18 +1,18 @@
-public function new(path, method, headers, body):
+pub fun new(path, method, headers, body) =
   Http_request(path, method, headers, body)
 
 
-public function inspect(Http_request(path, method, headers, body)):
-  Io.printfln("path: ~s", [path]);
-  Io.printfln("method: ~s", [method]);
-  List.iter(fun({key, value}): Io.printfln("~s: ~s", [key, value]), headers);
-  match body:
-  | Some(body) -> Io.printfln("body: ~s", [body])
+pub fun inspect(Http_request(path, method, headers, body)) =
+  Io.printfln("path = ~s", [path]) then
+  Io.printfln("method = ~s", [method]) then
+  List.iter(fun({key, value}) -> Io.printfln("~s = ~s", [key, value]), headers) then
+  when body is
+  | Some(body) -> Io.printfln("body = ~s", [body])
   | None -> ()
 
 
-function parse_header(line):
-  match String.find(line, ":"):
+fun parse_header(line) =
+  when String.find(line, ":") is
   | None -> None
   | Some(pos) ->
     let key = String.trim(String.slice(line, 0, pos)) in
@@ -20,51 +20,53 @@ function parse_header(line):
     Some({key, value})
 
 
-function parse_headers(lines):
-  function aux(lines, out):
-    match lines:
+fun parse_headers(lines) =
+  fun aux(lines, out) =
+    when lines is
     | [] -> List.rev(out)
     | hd :: tl ->
-      match parse_header(hd):
+      when parse_header(hd) is
       | None -> aux(tl, out)
       | Some(h) -> aux(tl, h :: out)
   in
   aux(lines, [])
 
 
-function non_empty(s):
-  match String.byte_length(s) = 0:
+fun non_empty(s) =
+  when String.byte_length(s) = 0 is
   | True -> None
   | False -> Some(s)
 
-function parse_request_line(line):
-  match String.split(line, " "):
+
+fun parse_request_line(line) =
+  when String.split(line, " ") is
   | method :: path :: _ -> Some({method, path})
   | _ -> None
 
-public function parse(raw):
-  Logging.debug("Parsing raw request: ~s", [raw]);
-  match String.split(raw, "\r\n\r\n"):
+
+pub fun parse(raw) =
+  Logging.debug("Parsing raw request: ~s", [raw]) then
+  when String.split(raw, "\r\n\r\n") is
   | head :: rest ->
     let body =
-      match rest:
+      when rest is
       | b :: _ -> non_empty(b)
       | [] -> None
     in
     let lines = String.split(head, "\r\n") in
-    (match lines:
+    (when lines is
     | request_line :: header_lines ->
-      Logging.debug("Request line: ~s", [request_line]);
-      match parse_request_line(request_line):
+      Logging.debug("Request line: ~s", [request_line]) then
+      when parse_request_line(request_line) is
       | None ->
-        Logging.error("Failed to parse request line: ~s", [request_line]);
+        Logging.error("Failed to parse request line: ~s", [request_line]) then
         None
       | Some({method, path}) ->
         let headers = parse_headers(header_lines) in
         Some(Http_request(path, method, headers, body))
     | _ ->
-      Logging.error("No lines found in request head: ~s", [head]);
+      Logging.error("No lines found in request head: ~s", [head]) then
       None)
   | _ ->
-    Logging.error("Failed to split on CRLFCRLF, raw: ~s", [raw]);
+    Logging.error("Failed to split on CRLFCRLF, raw: ~s", [raw]) then
     None

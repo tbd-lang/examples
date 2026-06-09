@@ -1,1 +1,1 @@
-public external sleep(ms): "timer:sleep"
+pub extern sleep(ms) = "timer:sleep"

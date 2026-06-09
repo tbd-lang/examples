@@ -4,9 +4,9 @@
 ## Example:
 ##   length([1, 2, 3])  # => 3
 ##   length([])         # => 0
-public function length(l):
-  function aux(l, n):
-    match l:
+pub fun length(l) =
+  fun aux(l, n) =
+    when l is
     | [] -> n
     | _ :: tl -> aux(tl, n + 1)
   in
@@ -19,9 +19,9 @@ public function length(l):
 ## Example:
 ##   rev([1, 2, 3])  # => [3, 2, 1]
 ##   rev([])         # => []
-public function rev(l):
-  function aux(l, out):
-    match l:
+pub fun rev(l) =
+  fun aux(l, out) =
+    when l is
     | [] -> out
     | hd :: tl -> aux(tl, hd :: out)
   in
@@ -34,8 +34,8 @@ public function rev(l):
 ## Example:
 ##   append([1, 2], [3, 4])  # => [1, 2, 3, 4]
 ##   append([], [1, 2])      # => [1, 2]
-public function append(l1, l2):
-  match l1:
+pub fun append(l1, l2) =
+  when l1 is
   | [] -> l2
   | hd :: tl -> hd :: append(tl, l2)
 
@@ -44,11 +44,11 @@ public function append(l1, l2):
 ## Type: fun(fun($a) -> $b, list[$a]) -> list[$b]
 ##
 ## Example:
-##   map(fun(x): x * 2, [1, 2, 3])  # => [2, 4, 6]
-##   map(fun(x): x + 1, [])         # => []
-public function map(f, l):
-  function aux(l, out):
-    match l:
+##   map(fun(x) = x * 2, [1, 2, 3])  # => [2, 4, 6]
+##   map(fun(x) = x + 1, [])         # => []
+pub fun map(f, l) =
+  fun aux(l, out) =
+    when l is
     | [] -> rev(out)
     | hd :: tl -> aux(tl, f(hd) :: out)
   in
@@ -59,14 +59,14 @@ public function map(f, l):
 ## Type: fun(fun($a) -> bool, list[$a]) -> list[$a]
 ##
 ## Example:
-##   filter(fun(x): x > 2, [1, 2, 3, 4])  # => [3, 4]
-##   filter(fun(x): x = 0, [1, 2, 3])     # => []
-public function filter(f, l):
-  function aux(l, out):
-    match l:
+##   filter(fun(x) = x > 2, [1, 2, 3, 4])  # => [3, 4]
+##   filter(fun(x) = x = 0, [1, 2, 3])     # => []
+pub fun filter(f, l) =
+  fun aux(l, out) =
+    when l is
     | [] -> rev(out)
     | hd :: tl ->
-      match f(hd):
+      when f(hd) is
       | True -> aux(tl, hd :: out)
       | False -> aux(tl, out)
   in
@@ -77,23 +77,23 @@ public function filter(f, l):
 ## Type: fun(fun($a) -> (), list[$a]) -> ()
 ##
 ## Example:
-##   iter(fun(x): tbd__print(x), [1, 2, 3])  # prints 1, 2, 3
-##   iter(fun(x): tbd__print(x), [])         # does nothing
-public function iter(f, l):
-  match l:
+##   iter(fun(x) = tbd__print(x), [1, 2, 3])  # prints 1, 2, 3
+##   iter(fun(x) = tbd__print(x), [])         # does nothing
+pub fun iter(f, l) =
+  when l is
   | [] -> ()
   | hd :: tl ->
-    f(hd); iter(f, tl)
+    f(hd) then iter(f, tl)
 
 
 ## Folds f over l from the left, starting with the accumulator acc.
 ## Type: fun(fun($b, $a) -> $b, $b, list[$a]) -> $b
 ##
 ## Example:
-##   fold_left(fun(a, b): a + b, 0, [1, 2, 3])   # => 6
-##   fold_left(fun(a, b): b :: a, [], [1, 2, 3]) # => [3, 2, 1]
-public function fold_left(f, acc, l):
-  match l:
+##   fold_left(fun(a, b) -> a + b, 0, [1, 2, 3])   # => 6
+##   fold_left(fun(a, b) = b :: a, [], [1, 2, 3]) # => [3, 2, 1]
+pub fun fold_left(f, acc, l) =
+  when l is
   | [] -> acc
   | hd :: tl ->
     fold_left(f, f(acc, hd), tl)
@@ -103,10 +103,10 @@ public function fold_left(f, acc, l):
 ## Type: fun(fun($a, $b) -> $b, list[$a], $b) -> $b
 ##
 ## Example:
-##   fold_right(fun(a, b): a + b, [1, 2, 3], 0)   # => 6
-##   fold_right(fun(a, b): a :: b, [1, 2, 3], []) # => [1, 2, 3]
-public function fold_right(f, l, acc):
-  match l:
+##   fold_right(fun(a, b) -> a + b, [1, 2, 3], 0)   # => 6
+##   fold_right(fun(a, b) = a :: b, [1, 2, 3], []) # => [1, 2, 3]
+pub fun fold_right(f, l, acc) =
+  when l is
   | [] -> acc
   | hd :: tl ->
     f(hd, fold_right(f, tl, acc))
@@ -118,8 +118,8 @@ public function fold_right(f, l, acc):
 ## Example:
 ##   sum([1, 2, 3, 4])  # => 10
 ##   sum([])            # => 0
-public function sum(l):
-  fold_left(fun(a, b): a + b, 0, l)
+pub fun sum(l) =
+  fold_left(fun(a, b) -> a + b, 0, l)
 
 
 ## Returns the product of all elements in l. Empty list returns 1.
@@ -128,21 +128,21 @@ public function sum(l):
 ## Example:
 ##   product([1, 2, 3, 4])  # => 24
 ##   product([])            # => 1
-public function product(l):
-  fold_left(fun(a, b): a * b, 1, l)
+pub fun product(l) =
+  fold_left(fun(a, b) -> a * b, 1, l)
 
 
 ## Returns True if f returns True for any element of l, False otherwise.
 ## Type: fun(fun($a) -> bool, list[$a]) -> bool
 ##
 ## Example:
-##   any(fun(x): x > 2, [1, 2, 3])  # => True
-##   any(fun(x): x > 9, [1, 2, 3])  # => False
-public function any(f, l):
-  match l:
+##   any(fun(x) = x > 2, [1, 2, 3])  # => True
+##   any(fun(x) = x > 9, [1, 2, 3])  # => False
+pub fun any(f, l) =
+  when l is
   | [] -> False
   | hd :: tl ->
-    match f(hd):
+    when f(hd) is
     | True -> True
     | False -> any(f, tl)
 
@@ -151,13 +151,13 @@ public function any(f, l):
 ## Type: fun(fun($a) -> bool, list[$a]) -> bool
 ##
 ## Example:
-##   all(fun(x): x > 0, [1, 2, 3])  # => True
-##   all(fun(x): x > 1, [1, 2, 3])  # => False
-public function all(f, l):
-  match l:
+##   all(fun(x) = x > 0, [1, 2, 3])  # => True
+##   all(fun(x) = x > 1, [1, 2, 3])  # => False
+pub fun all(f, l) =
+  when l is
   | [] -> True
   | hd :: tl ->
-    match f(hd):
+    when f(hd) is
     | False -> False
     | True -> all(f, tl)
 
@@ -168,11 +168,11 @@ public function all(f, l):
 ## Example:
 ##   contains(2, [1, 2, 3])  # => True
 ##   contains(9, [1, 2, 3])  # => False
-public function contains(x, l):
-  match l:
+pub fun contains(x, l) =
+  when l is
   | [] -> False
   | hd :: tl ->
-    match hd = x:
+    when hd = x is
     | True -> True
     | False -> contains(x, tl)
 
@@ -183,11 +183,11 @@ public function contains(x, l):
 ## Example:
 ##   nth([10, 20, 30], 1)  # => Some(20)
 ##   nth([10, 20, 30], 5)  # => None
-public function nth(l, n):
-  match l:
+pub fun nth(l, n) =
+  when l is
   | [] -> None
   | hd :: tl ->
-    match n = 0:
+    when n = 0 is
     | True -> Some(hd)
     | False -> nth(tl, n - 1)
 
@@ -198,12 +198,12 @@ public function nth(l, n):
 ## Example:
 ##   take(2, [1, 2, 3, 4])  # => [1, 2]
 ##   take(9, [1, 2])        # => [1, 2]
-public function take(n, l):
-  function aux(n, l, out):
-    match n <= 0:
+pub fun take(n, l) =
+  fun aux(n, l, out) =
+    when n <= 0 is
     | True -> rev(out)
     | False ->
-      match l:
+      when l is
       | [] -> rev(out)
       | hd :: tl -> aux(n - 1, tl, hd :: out)
   in
@@ -216,11 +216,11 @@ public function take(n, l):
 ## Example:
 ##   drop(2, [1, 2, 3, 4])  # => [3, 4]
 ##   drop(9, [1, 2])        # => []
-public function drop(n, l):
-  match n <= 0:
+pub fun drop(n, l) =
+  when n <= 0 is
   | True -> l
   | False ->
-    match l:
+    when l is
     | [] -> []
     | _ :: tl -> drop(n - 1, tl)
 
@@ -231,12 +231,12 @@ public function drop(n, l):
 ## Example:
 ##   zip([1, 2, 3], ["a", "b", "c"])  # => [(1, "a"), (2, "b"), (3, "c")]
 ##   zip([1, 2, 3], ["a"])            # => [(1, "a")]
-public function zip(l1, l2):
-  function aux(l1, l2, out):
-    match l1:
+pub fun zip(l1, l2) =
+  fun aux(l1, l2, out) =
+    when l1 is
     | [] -> rev(out)
     | h1 :: t1 ->
-      match l2:
+      when l2 is
       | [] -> rev(out)
       | h2 :: t2 -> aux(t1, t2, {h1, h2} :: out)
   in
@@ -249,9 +249,9 @@ public function zip(l1, l2):
 ## Example:
 ##   range(0, 5)  # => [0, 1, 2, 3, 4]
 ##   range(3, 3)  # => []
-public function range(lo, hi):
-  function aux(i, out):
-    match i < lo:
+pub fun range(lo, hi) =
+  fun aux(i, out) =
+    when i < lo is
     | True -> out
     | False -> aux(i - 1, i :: out)
   in
@@ -264,16 +264,16 @@ public function range(lo, hi):
 ## Example:
 ##   max([3, 1, 4, 1, 5])  # => Some(5)
 ##   max([])               # => None
-public function max(l):
-  match l:
+pub fun max(l) =
+  when l is
   | [] -> None
   | hd :: tl ->
-    function pick(a, b):
-      match a > b:
+    fun pick(a, b) =
+      when a > b is
       | True -> a
       | False -> b
     in
-    Some(fold_left(fun(a, b): pick(a, b), hd, tl))
+    Some(fold_left(fun(a, b) -> pick(a, b), hd, tl))
 
 
 ## Returns Some of the smallest element of l, or None if l is empty.
@@ -282,13 +282,13 @@ public function max(l):
 ## Example:
 ##   min([3, 1, 4, 1, 5])  # => Some(1)
 ##   min([])               # => None
-public function min(l):
-  match l:
+pub fun min(l) =
+  when l is
   | [] -> None
   | hd :: tl ->
-    function pick(a, b):
-      match a < b:
+    fun pick(a, b) =
+      when a < b is
       | True -> a
       | False -> b
     in
-    Some(fold_left(fun(a, b): pick(a, b), hd, tl))
+    Some(fold_left(fun(a, b) -> pick(a, b), hd, tl))

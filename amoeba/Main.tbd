@@ -1,4 +1,4 @@
-public function main():
+pub fun main() =
   let {host, port} = {{127, 0, 0, 1}, 42069} in
   let server = Http_server.new(host, port) in
   Http_server.start(server)
