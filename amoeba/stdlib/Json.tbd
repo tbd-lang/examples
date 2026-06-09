@@ -1,0 +1,98 @@
+
+extern erlang_to_float(s) = "erlang:binary_to_float"
+extern erlang_to_integer(s) = "erlang:binary_to_integer"
+
+fun parse_number(chars) =
+  fun collect_digits(chars, acc) =
+    when chars is
+    | [] -> {[], acc}
+    | c :: rest ->
+      (when c is
+      | '0'..'9' -> collect_digits(rest, List.append(acc, [c]))
+      | _ -> {chars, acc})
+    | _ -> {chars, acc}
+  in
+  fun collect_frac(chars, acc) =
+    when chars is
+    | '.' :: rest ->
+      let {rest, digits} = collect_digits(rest, []) in
+      when digits is
+      | [] -> Process.exit(Invalid_number("Expected digits after '.'"))
+      | _ -> {rest, List.append(acc, '.' :: digits)}
+    | _ -> {chars, acc}
+  in
+  fun collect_exp_digits(rest, acc) =
+    let {sign, rest} =
+      when rest is
+      | '+' :: rest -> {['+'], rest}
+      | '-' :: rest -> {['-'], rest}
+      | _ -> {[], rest}
+    in
+    let {rest, digits} = collect_digits(rest, []) in
+    when digits is
+    | [] -> Process.exit(Invalid_number("Expected digits after exponent"))
+    | _ -> {rest, List.append(List.append(acc, 'e' :: sign), digits)}
+  in
+  fun collect_exp(chars, acc) =
+    when chars is
+    | 'e' :: rest -> collect_exp_digits(rest, acc)
+    | 'E' :: rest -> collect_exp_digits(rest, acc)
+    | _ -> {chars, acc}
+  in
+  let {chars, sign} =
+    when chars is
+    | '-' :: rest -> {rest, ['-']}
+    | _ -> {chars, []}
+  in
+  let {chars, int_digits} = collect_digits(chars, []) in
+  when int_digits is
+  | [] -> Process.exit(Invalid_number("Expected digits"))
+  | _ ->
+    let acc = List.append(sign, int_digits) in
+    let {chars, acc} = collect_frac(chars, acc) in
+    let {chars, acc} = collect_exp(chars, acc) in
+    let s = String.from_bytes(acc) in
+    let value =
+      when String.contains(s, ".") is
+      | True -> Float(erlang_to_float(s))
+      | False -> Int(erlang_to_integer(s))
+    in
+    {chars, value}
+
+
+
+fun parse(chars) =
+  when chars is
+  | '\r' :: chars -> parse(chars)
+  | '\n' :: chars -> parse(chars)
+  | '\t' :: chars -> parse(chars)
+  | ' ' :: chars -> parse(chars)
+  | '0'..'9' :: _ -> parse_number(chars)
+  | '.' :: _ -> parse_number(chars)
+  | 'a'..'z' :: _ -> parse_ident(chars)
+  | 'A'..'Z' :: _ -> parse_ident(chars)
+  | '"' :: _ -> parse_string(chars)
+  | '[' :: _ -> parse_array(chars)
+  | '{' :: _ -> parse_object(chars)
+  | c -> Process.exit(Uknown_character(c))
+
+
+pub fun from_bytes(bytes) =
+  let bytes = String.to_bytes(bytes) in
+  parse(bytes)
+
+
+pub fun test() =
+  let cases = [
+    "42",
+    "-7",
+    "3.14",
+    "-0.5",
+    "1e10",
+    "2.5E-3",
+    "100.0e+2"
+  ] in
+  List.each(fun(s) ->
+    let {_, value} = parse_number(String.to_bytes(s)) in
+    Io.println(s ++ " => " ++ Debug.to_string(value))
+  , cases)
