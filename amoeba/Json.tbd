@@ -1,0 +1,35 @@
+pub fun test() =
+  [ "null", "true", "false" ]
+  |> List.map(fun(c) -> String.to_bytes(c) |> parse())
+  |> List.iter(fun({_, j}) -> Io.printfln("~s", [inspect_json(j)]))
+
+
+fun parse(chars) =
+  when chars is
+  | c :: _ and c >= 'a' && c <= 'z' -> parse_ident(chars)
+
+
+fun parse_ident(chars) =
+  fun aux(chars, ident) =
+    when chars is
+    | c :: tl and c >= 'a' && c <= 'z' -> aux(tl, c :: ident)
+    | _ ->
+      let ident = ident |> List.rev() |> String.from_bytes() in
+      {chars, ident}
+  in
+  let {chars, ident} = aux(chars, []) in
+  let ident =
+    when ident is
+    | "null" -> JsonNull
+    | "true" -> JsonBool(True)
+    | "false" -> JsonBool(False)
+    | ident -> ident
+  in
+  {chars, ident}
+
+
+fun inspect_json(json) =
+  when json is
+  | JsonNull -> "JsonNull"
+  | JsonBool(True) -> "JsonBool(true)"
+  | JsonBool(False) -> "JsonBool(false)"
