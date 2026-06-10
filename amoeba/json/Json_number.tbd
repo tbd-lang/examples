@@ -6,25 +6,26 @@ import stdlib.Io
 
 fun convert_number_chars(negative, f, number_chars) =
   let number_chars =
-    when negative is
+    match negative with
     | true -> '-' :: number_chars
     | false -> number_chars
   in
-  when 
+  match
     number_chars 
     |> List.rev() 
     |> String.from_bytes() 
     |> f()
-  is
+  with
   | Some(number) -> number
   | None -> Process.exit(Parse_number_error)
 
+
 fun parse_float(chars) =
   fun aux(chars, number_chars) =
-    when chars is
+    match chars with
     | [] -> {[], number_chars}
     | '.' :: chars -> aux(chars, '.' :: number_chars)
-    | c :: chars and c >= '0' && c <= '9' -> aux(chars, c :: number_chars)
+    | c :: chars when c >= '0' && c <= '9' -> aux(chars, c :: number_chars)
     | _ -> Process.exit(Parse_number_error)
   in
   aux(chars, [])
@@ -32,10 +33,10 @@ fun parse_float(chars) =
 
 fun parse_int(chars) =
   fun aux(chars, number_chars) =
-    when chars is
+    match chars with
     | [] -> {[], number_chars}
     | '.' :: _ -> parse_float(List.append(number_chars, chars))
-    | c :: chars and c >= '0' && c <= '9' -> aux(chars, c :: number_chars)
+    | c :: chars when c >= '0' && c <= '9' -> aux(chars, c :: number_chars)
     | _ -> Process.exit(Parse_number_error)
   in
   aux(chars, [])
@@ -44,15 +45,17 @@ fun parse_int(chars) =
 
 pub fun parse(chars) =
   let {negative, chars} =
-    when chars is
+    match chars with
     | '-' :: chars -> {true, chars}
     | _ -> {false, chars}
   in
   let {chars, number_chars} =
-    when chars is
+    match chars with
     | '0' :: _ -> parse_float(chars)
-    | c :: _ and c >= '1' && c <= '9' -> parse_int(chars)
+    | c :: _ when c >= '1' && c <= '9' -> parse_int(chars)
     | _ -> Process.exit(Parse_number_error)
   in
-  let number = parse_number(negative, number_chars) in
+  let number =
+    convert_number_chars(negative, fun(v) -> String.to_float(v), number_chars)
+  in
   {chars, Json_number(number)}

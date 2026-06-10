@@ -11,7 +11,7 @@ import stdlib.Logging
 pub extern byte_length(s) = "erlang:byte_size"
 
 
-## Trims leading and trailing whitespace from a binary string.
+## Trims leading when trailing whitespace from a binary string.
 ## Type: fun(string) -> string
 ##
 ## Example:
@@ -67,7 +67,7 @@ pub extern reverse(s) = "string:reverse"
 ##   contains("foobar", "xyz")  # => false
 extern erlang_match(s, sub) = "binary:match"
 pub fun contains(s, sub) =
-  when erlang_match(s, sub) is
+  match erlang_match(s, sub) with
   | Nomatch -> false
   | _ -> true
 
@@ -80,7 +80,7 @@ pub fun contains(s, sub) =
 ##   find("foobar", "xyz")  # => None
 extern erlang_find(s, sub) = "binary:match"
 pub fun find(s, sub) =
-  when erlang_find(s, sub) is
+  match erlang_find(s, sub) with
   | Nomatch -> None
   | {pos, _} -> Some(pos)
 
@@ -93,7 +93,7 @@ pub fun find(s, sub) =
 ##   starts_with("foobar", "bar")  # => false
 pub fun starts_with(s, prefix) =
   let plen = byte_length(prefix) in
-  when byte_length(s) >= plen is
+  match byte_length(s) >= plen with
   | true -> slice(s, 0, plen) = prefix
   | false -> false
 
@@ -106,7 +106,7 @@ pub fun starts_with(s, prefix) =
 pub fun ends_with(s, suffix) =
   let slen = byte_length(s) in
   let suflen = byte_length(suffix) in
-  when slen >= suflen is
+  match slen >= suflen with
   | true -> slice(s, slen - suflen, suflen) = suffix
   | false -> false
 
@@ -158,7 +158,7 @@ pub extern from_integer(n) = "erlang:integer_to_binary"
 ##   to_integer("abc")  # => None
 extern erlang_to_integer(s) = "erlang:binary_to_integer"
 pub fun to_integer(s) =
-  when erlang_to_integer(s) is
+  match erlang_to_integer(s) with
   | Error(_) -> None
   | n -> Some(n)
 
@@ -179,8 +179,7 @@ pub extern from_float(f) = "erlang:float_to_binary"
 ##   to_float("anything")  # => None
 pub extern erlang_to_float(s) = "erlang:binary_to_float"
 pub fun to_float(s) =
-  Logging.info("~w", [s]) then
-  when erlang_to_float(s) is
+  match erlang_to_float(s) with
   | Error(_) -> None
   | n -> Some(n)
 
@@ -194,7 +193,7 @@ pub fun to_float(s) =
 ##   join(["a", "b", "c"], ", ")  # => "a, b, c"
 ##   join([], ", ")               # => ""
 pub fun join(parts, sep) =
-  when parts is
+  match parts with
   | [] -> ""
   | hd :: tl ->
     List.fold_left(fun(acc, s) -> acc ++ sep ++ s, hd, tl)

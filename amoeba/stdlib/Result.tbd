@@ -2,13 +2,13 @@ import stdlib.Logging
 
 
 pub fun map_error(f, result) =
-  when result is
+  match result with
   | Error(error) -> Error(f(error))
   | Ok(value) -> Ok(value)
 
 
 pub fun map(f, result) =
-  when result is
+  match result with
   | Error(error) -> Error(error)
   | Ok(value) -> Ok(f(value))
 

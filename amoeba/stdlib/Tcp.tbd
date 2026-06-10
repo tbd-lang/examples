@@ -1,47 +1,47 @@
 extern erlang_listen(port, opts) = "gen_tcp:listen"
 pub fun listen(host, port) =
-  when erlang_listen(port, [Binary, {Reuseaddr, true}, {Ip, host}, {Active, false}]) is
+  match erlang_listen(port, [Binary, {Reuseaddr, true}, {Ip, host}, {Active, false}]) with
   | Error(e) -> Error(e)
   | Ok(listener) -> Ok(listener)
 
 
 extern erlang_accept(listener) = "gen_tcp:accept"
 pub fun accept(listener) =
-  when erlang_accept(listener) is
+  match erlang_accept(listener) with
   | Error(e) -> Error(e)
   | Ok(connection) -> Ok(connection)
 
 
 extern erlang_connect(host, port, opts) = "gen_tcp:connect"
 pub fun connect(host, port) =
-  when erlang_connect(host, port, [Binary, {Active, false}]) is
+  match erlang_connect(host, port, [Binary, {Active, false}]) with
   | Error(e) -> Error(e)
   | Ok(connection) -> Ok(connection)
 
 
 extern erlang_write(socket, packet) = "gen_tcp:send"
 pub fun write(socket, packet) =
-  when erlang_write(socket, packet) is
+  match erlang_write(socket, packet) with
   | Error(e) -> Error(e)
   | Ok -> Ok(())
 
 
 extern erlang_read(socket, length) = "gen_tcp:recv"
 pub fun read(socket) =
-  when erlang_read(socket, 0) is
+  match erlang_read(socket, 0) with
   | Error(e) -> Error(e)
   | Ok(data) -> Ok(data)
 
 
 extern erlang_close(listener) = "gen_tcp:close"
 pub fun close(listener) =
-  when erlang_close(listener) is
+  match erlang_close(listener) with
   | Error(e) -> Error(e)
   | Ok -> Ok(())
 
 
 extern erlang_shutdown(socket, how) = "gen_tcp:shutdown"
 pub fun shutdown(socket) =
-  when erlang_shutdown(socket, Read_write) is
+  match erlang_shutdown(socket, Read_write) with
   | Error(e) -> Error(e)
   | Ok -> Ok(())

@@ -10,30 +10,30 @@ pub fun new(host, port) =
 
 pub fun start(http_server) =
   let Http_server(host, port) = http_server in
-  when Tcp.listen(host, port) is
+  match Tcp.listen(host, port) with
   | Error(e) ->
     Logging.error("Failed to bind to socket = ~s", [e]) then
     Process.exit(e)
   | Ok(listener) -> accept(listener)
 
 fun accept(listener) =
-  when Tcp.accept(listener) is
+  match Tcp.accept(listener) with
   | Error(e) ->
     Logging.error("Failed to accept connection = ~s", [e]) then
     accept(listener)
   | Ok(connection) ->
-    spawn(fun() -> handle(connection)) then
+    spawn(fun() -> hwhenle(connection)) then
     accept(listener)
 
 
-fun handle(connection) =
-  when Tcp.read(connection) is
+fun hwhenle(connection) =
+  match Tcp.read(connection) with
   | Error(e) -> Logging.error("Failed to read from connection = ~s", [e])
   | Ok(data) -> parse(connection, data)
 
 
 fun parse(connection, data) =
-  when Http_request.parse(data) is
+  match Http_request.parse(data) with
   | None -> Logging.error("Failed to parse http request")
   | Some(request) ->
     Http_request.inspect(request) then
@@ -41,7 +41,7 @@ fun parse(connection, data) =
 
 
 fun respond(connection) =
-  when Tcp.write(connection, "HTTP/1.1 200 OK\r\n\r\n") is
+  match Tcp.write(connection, "HTTP/1.1 200 OK\r\n\r\n") with
   | Error(e) -> Logging.error("Failed to write to connection = ~s", [e])
   | Ok(_) ->
     Tcp.close(connection) then
