@@ -42,7 +42,6 @@ fun parse_int(chars) =
   aux(chars, [])
 
 
-
 pub fun parse(chars) =
   let {negative, chars} =
     match chars with
@@ -56,6 +55,9 @@ pub fun parse(chars) =
     | _ -> Process.exit(Parse_number_error)
   in
   let number =
-    convert_number_chars(negative, fun(v) -> String.to_float(v), number_chars)
+    convert_number_chars(
+      negative,
+      fun(v) -> String.to_float(v),
+      number_chars)
   in
   {chars, Json_number(number)}
