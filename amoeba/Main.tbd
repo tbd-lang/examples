@@ -1,1 +1,4 @@
-pub fun main() = "\""
+import json.Json
+
+
+pub fun main() = Json.test()
