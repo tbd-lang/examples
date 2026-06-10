@@ -35,9 +35,7 @@ fun parse_ident(chars, tokens) =
 
 
 fun parse_int(negative, chars, tokens) =
-  let init =
-    when negative is true -> ['-'] | false -> []
-  in
+  let init = when negative is true -> ['-'] | false -> [] in
   fun aux(chars, int) =
     when chars is
     | c :: tl and c >= '0' && c <= '9' -> aux(tl, c :: int)
