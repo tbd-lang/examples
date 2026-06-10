@@ -1,3 +1,6 @@
+import stdlib.List
+
+
 ## Returns the byte length of a binary string.
 ## Type: fun(string) -> int
 ##

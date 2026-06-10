@@ -1,3 +1,9 @@
+import stdlib.Io
+import stdlib.String
+import stdlib.List
+import stdlib.Logging
+
+
 pub fun new(path, method, headers, body) =
   Http_request(path, method, headers, body)
 

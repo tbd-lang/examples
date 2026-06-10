@@ -1,3 +1,6 @@
+import stdlib.Io
+
+
 pub fun info(message, args) =
   Io.printfln("[Inf] " ++ message, args)
 

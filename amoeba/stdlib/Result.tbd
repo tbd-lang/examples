@@ -1,3 +1,6 @@
+import stdlib.Logging
+
+
 pub fun map_error(f, result) =
   when result is
   | Error(error) -> Error(f(error))
