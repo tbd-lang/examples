@@ -1,0 +1,58 @@
+import stdlib.List
+import stdlib.String
+import stdlib.Process
+import stdlib.Io
+
+
+fun convert_number_chars(negative, f, number_chars) =
+  let number_chars =
+    when negative is
+    | true -> '-' :: number_chars
+    | false -> number_chars
+  in
+  when 
+    number_chars 
+    |> List.rev() 
+    |> String.from_bytes() 
+    |> f()
+  is
+  | Some(number) -> number
+  | None -> Process.exit(Parse_number_error)
+
+fun parse_float(chars) =
+  fun aux(chars, number_chars) =
+    when chars is
+    | [] -> {[], number_chars}
+    | '.' :: chars -> aux(chars, '.' :: number_chars)
+    | c :: chars and c >= '0' && c <= '9' -> aux(chars, c :: number_chars)
+    | _ -> Process.exit(Parse_number_error)
+  in
+  aux(chars, [])
+
+
+fun parse_int(chars) =
+  fun aux(chars, number_chars) =
+    when chars is
+    | [] -> {[], number_chars}
+    | '.' :: _ -> parse_float(List.append(number_chars, chars))
+    | c :: chars and c >= '0' && c <= '9' -> aux(chars, c :: number_chars)
+    | _ -> Process.exit(Parse_number_error)
+  in
+  aux(chars, [])
+
+
+
+pub fun parse(chars) =
+  let {negative, chars} =
+    when chars is
+    | '-' :: chars -> {true, chars}
+    | _ -> {false, chars}
+  in
+  let {chars, number_chars} =
+    when chars is
+    | '0' :: _ -> parse_float(chars)
+    | c :: _ and c >= '1' && c <= '9' -> parse_int(chars)
+    | _ -> Process.exit(Parse_number_error)
+  in
+  let number = parse_number(negative, number_chars) in
+  {chars, Json_number(number)}

@@ -1,7 +1,11 @@
+### Following process defined in `https://www.json.org/json-en.html`
+
 import stdlib.String
 import stdlib.List
 import stdlib.Io
 import stdlib.Process
+
+import json.Json_number
 
 
 fun paren(s) = "(" ++ s ++ ")"
@@ -12,10 +16,10 @@ fun inspect_json(json) =
   | Json_null -> "Json_null"
   | Json_bool(true) -> "Json_bool(true)"
   | Json_bool(false) -> "Json_bool(false)"
-  | Json_int(n) -> "Json_int" ++ paren(String.from_integer(n))
+  | Json_number(n) -> "Json_number" ++ paren(String.from_float(n))
 
 
-fun parse_ident(chars, tokens) =
+fun parse_ident(chars) =
   fun aux(chars, ident) =
     when chars is
     | c :: tl and c >= 'a' && c <= 'z' -> aux(tl, c :: ident)
@@ -29,43 +33,27 @@ fun parse_ident(chars, tokens) =
     | "null" -> Json_null
     | "true" -> Json_bool(true)
     | "false" -> Json_bool(false)
-    | _ -> ident
+    | _ -> Process.exit(Parse_ident_error)
   in
-  {chars, ident :: tokens}
-
-
-fun parse_int(negative, chars, tokens) =
-  let init = when negative is true -> ['-'] | false -> [] in
-  fun aux(chars, int) =
-    when chars is
-    | c :: tl and c >= '0' && c <= '9' -> aux(tl, c :: int)
-    | _ ->
-      let Some(int) =  # extract out of option, this is not exhaustive
-        int
-        |> List.rev()
-        |> String.from_bytes() 
-        |> String.to_integer()
-      in
-      {chars, Json_int(int) :: tokens}
-  in
-  aux(chars, init)
+  {chars, ident}
 
 
 fun parse(chars) =
-  fun aux({chars, tokens}) =
+  fun aux(chars, tokens) =
     when chars is
     | [] -> tokens
     | c :: _ and c >= 'a' && c <= 'z' ->
-      aux(parse_ident(chars, tokens))
-    | '-' :: c :: chars and c >= '0' && c <= '9' ->
-      aux(parse_int(true, c :: chars, tokens))
+      let {chars, token} = parse_ident(chars) in
+      aux(chars, token :: tokens)
     | c :: _ and c >= '0' && c <= '9' ->
-      aux(parse_int(false, chars, tokens))
+      let {chars, token} = Json_number.parse(chars) in
+      aux(chars, token :: tokens)
+    | _ -> Process.exit(Parse_error)
   in
-  aux({chars, []})
+  aux(chars, [])
 
 
 pub fun test() =
-  [ "null", "true", "false", "1234", "-1234" ]
+  [ "null", "true", "false", "12.34" ]
   |> List.map(fun(c) -> parse(String.to_bytes(c)))
   |> List.iter(fun([j]) -> Io.printfln("~s", [inspect_json(j)]))

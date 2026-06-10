@@ -1,4 +1,5 @@
 import stdlib.List
+import stdlib.Logging
 
 
 ## Returns the byte length of a binary string.
@@ -168,6 +169,22 @@ pub fun to_integer(s) =
 ## Example:
 ##   from_float(3.14)  # => "3.14"
 pub extern from_float(f) = "erlang:float_to_binary"
+
+
+## Converts a string to its float representation.
+## Type: fun(string) -> option[float]
+##
+## Example:
+##   to_float("3.14")  # => Some(3.14)
+##   to_float("anything")  # => None
+pub extern erlang_to_float(s) = "erlang:binary_to_float"
+pub fun to_float(s) =
+  Logging.info("~w", [s]) then
+  when erlang_to_float(s) is
+  | Error(_) -> None
+  | n -> Some(n)
+
+
 
 
 ## Joins a list of strings with sep between each element.
