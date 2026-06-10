@@ -1,6 +1,6 @@
 extern erlang_listen(port, opts) = "gen_tcp:listen"
 pub fun listen(host, port) =
-  when erlang_listen(port, [Binary, {Reuseaddr, True}, {Ip, host}, {Active, False}]) is
+  when erlang_listen(port, [Binary, {Reuseaddr, true}, {Ip, host}, {Active, false}]) is
   | Error(e) -> Error(e)
   | Ok(listener) -> Ok(listener)
 
@@ -14,7 +14,7 @@ pub fun accept(listener) =
 
 extern erlang_connect(host, port, opts) = "gen_tcp:connect"
 pub fun connect(host, port) =
-  when erlang_connect(host, port, [Binary, {Active, False}]) is
+  when erlang_connect(host, port, [Binary, {Active, false}]) is
   | Error(e) -> Error(e)
   | Ok(connection) -> Ok(connection)
 

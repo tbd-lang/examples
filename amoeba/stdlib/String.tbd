@@ -62,13 +62,13 @@ pub extern reverse(s) = "string:reverse"
 ## Type: fun(string, string) -> bool
 ##
 ## Example:
-##   contains("foobar", "oba")  # => True
-##   contains("foobar", "xyz")  # => False
+##   contains("foobar", "oba")  # => true
+##   contains("foobar", "xyz")  # => false
 extern erlang_match(s, sub) = "binary:match"
 pub fun contains(s, sub) =
   when erlang_match(s, sub) is
-  | Nomatch -> False
-  | _ -> True
+  | Nomatch -> false
+  | _ -> true
 
 
 ## Returns Some(index) of the first occurrence of sub in s, or None.
@@ -88,33 +88,26 @@ pub fun find(s, sub) =
 ## Type: fun(string, string) -> bool
 ##
 ## Example:
-##   starts_with("foobar", "foo")  # => True
-##   starts_with("foobar", "bar")  # => False
+##   starts_with("foobar", "foo")  # => true
+##   starts_with("foobar", "bar")  # => false
 pub fun starts_with(s, prefix) =
   let plen = byte_length(prefix) in
   when byte_length(s) >= plen is
-  | False -> False
-  | True ->
-    when slice(s, 0, plen) = prefix is
-    | True -> True
-    | False -> False
-
+  | true -> slice(s, 0, plen) = prefix
+  | false -> false
 
 ## Returns true if s ends with the given suffix.
 ## Type: fun(string, string) -> bool
 ##
 ## Example:
-##   ends_with("foobar", "bar")  # => True
-##   ends_with("foobar", "foo")  # => False
+##   ends_with("foobar", "bar")  # => true
+##   ends_with("foobar", "foo")  # => false
 pub fun ends_with(s, suffix) =
   let slen = byte_length(s) in
   let suflen = byte_length(suffix) in
   when slen >= suflen is
-  | False -> False
-  | True ->
-    when slice(s, slen - suflen, suflen) = suffix is
-    | True -> True
-    | False -> False
+  | true -> slice(s, slen - suflen, suflen) = suffix
+  | false -> false
 
 
 ## Splits s on each occurrence of sep, returning a list of binaries.

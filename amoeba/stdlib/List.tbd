@@ -55,7 +55,7 @@ pub fun map(f, l) =
   aux(l, [])
 
 
-## Returns the elements of l for which f returns True, preserving order.
+## Returns the elements of l for which f returns true, preserving order.
 ## Type: fun(fun($a) -> bool, list[$a]) -> list[$a]
 ##
 ## Example:
@@ -67,8 +67,8 @@ pub fun filter(f, l) =
     | [] -> rev(out)
     | hd :: tl ->
       when f(hd) is
-      | True -> aux(tl, hd :: out)
-      | False -> aux(tl, out)
+      | true -> aux(tl, hd :: out)
+      | false -> aux(tl, out)
   in
   aux(l, [])
 
@@ -132,49 +132,49 @@ pub fun product(l) =
   fold_left(fun(a, b) -> a * b, 1, l)
 
 
-## Returns True if f returns True for any element of l, False otherwise.
+## Returns true if f returns true for any element of l, false otherwise.
 ## Type: fun(fun($a) -> bool, list[$a]) -> bool
 ##
 ## Example:
-##   any(fun(x) = x > 2, [1, 2, 3])  # => True
-##   any(fun(x) = x > 9, [1, 2, 3])  # => False
+##   any(fun(x) = x > 2, [1, 2, 3])  # => true
+##   any(fun(x) = x > 9, [1, 2, 3])  # => false
 pub fun any(f, l) =
   when l is
-  | [] -> False
+  | [] -> false
   | hd :: tl ->
     when f(hd) is
-    | True -> True
-    | False -> any(f, tl)
+    | true -> true
+    | false -> any(f, tl)
 
 
-## Returns True if f returns True for every element of l, False otherwise.
+## Returns true if f returns true for every element of l, false otherwise.
 ## Type: fun(fun($a) -> bool, list[$a]) -> bool
 ##
 ## Example:
-##   all(fun(x) = x > 0, [1, 2, 3])  # => True
-##   all(fun(x) = x > 1, [1, 2, 3])  # => False
+##   all(fun(x) = x > 0, [1, 2, 3])  # => true
+##   all(fun(x) = x > 1, [1, 2, 3])  # => false
 pub fun all(f, l) =
   when l is
-  | [] -> True
+  | [] -> true
   | hd :: tl ->
     when f(hd) is
-    | False -> False
-    | True -> all(f, tl)
+    | false -> false
+    | true -> all(f, tl)
 
 
-## Returns True if x is equal to some element of l, False otherwise.
+## Returns true if x is equal to some element of l, false otherwise.
 ## Type: fun($a, list[$a]) -> bool
 ##
 ## Example:
-##   contains(2, [1, 2, 3])  # => True
-##   contains(9, [1, 2, 3])  # => False
+##   contains(2, [1, 2, 3])  # => true
+##   contains(9, [1, 2, 3])  # => false
 pub fun contains(x, l) =
   when l is
-  | [] -> False
+  | [] -> false
   | hd :: tl ->
     when hd = x is
-    | True -> True
-    | False -> contains(x, tl)
+    | true -> true
+    | false -> contains(x, tl)
 
 
 ## Returns Some of the nth element of l (zero-indexed), or None if out of bounds.
@@ -188,8 +188,8 @@ pub fun nth(l, n) =
   | [] -> None
   | hd :: tl ->
     when n = 0 is
-    | True -> Some(hd)
-    | False -> nth(tl, n - 1)
+    | true -> Some(hd)
+    | false -> nth(tl, n - 1)
 
 
 ## Returns the first n elements of l, or all of l if n exceeds its length.
@@ -201,8 +201,8 @@ pub fun nth(l, n) =
 pub fun take(n, l) =
   fun aux(n, l, out) =
     when n <= 0 is
-    | True -> rev(out)
-    | False ->
+    | true -> rev(out)
+    | false ->
       when l is
       | [] -> rev(out)
       | hd :: tl -> aux(n - 1, tl, hd :: out)
@@ -218,8 +218,8 @@ pub fun take(n, l) =
 ##   drop(9, [1, 2])        # => []
 pub fun drop(n, l) =
   when n <= 0 is
-  | True -> l
-  | False ->
+  | true -> l
+  | false ->
     when l is
     | [] -> []
     | _ :: tl -> drop(n - 1, tl)
@@ -252,8 +252,8 @@ pub fun zip(l1, l2) =
 pub fun range(lo, hi) =
   fun aux(i, out) =
     when i < lo is
-    | True -> out
-    | False -> aux(i - 1, i :: out)
+    | true -> out
+    | false -> aux(i - 1, i :: out)
   in
   aux(hi - 1, [])
 
@@ -270,8 +270,8 @@ pub fun max(l) =
   | hd :: tl ->
     fun pick(a, b) =
       when a > b is
-      | True -> a
-      | False -> b
+      | true -> a
+      | false -> b
     in
     Some(fold_left(fun(a, b) -> pick(a, b), hd, tl))
 
@@ -288,7 +288,7 @@ pub fun min(l) =
   | hd :: tl ->
     fun pick(a, b) =
       when a < b is
-      | True -> a
-      | False -> b
+      | true -> a
+      | false -> b
     in
     Some(fold_left(fun(a, b) -> pick(a, b), hd, tl))

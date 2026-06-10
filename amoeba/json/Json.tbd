@@ -7,8 +7,8 @@ import stdlib.Process
 fun inspect_json(json) =
   when json is
   | Json_null -> "Json_null"
-  | Json_bool(True) -> "Json_bool(true)"
-  | Json_bool(False) -> "Json_bool(false)"
+  | Json_bool(true) -> "Json_bool(true)"
+  | Json_bool(false) -> "Json_bool(false)"
 
 
 fun parse_ident(chars) =
@@ -23,8 +23,8 @@ fun parse_ident(chars) =
   let ident =
     when ident is
     | "null" -> Json_null
-    | "true" -> Json_bool(True)
-    | "false" -> Json_bool(False)
+    | "true" -> Json_bool(true)
+    | "false" -> Json_bool(false)
     | ident -> ident
   in
   {chars, ident}

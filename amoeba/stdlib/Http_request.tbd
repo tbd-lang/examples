@@ -40,8 +40,8 @@ fun parse_headers(lines) =
 
 fun non_empty(s) =
   when String.byte_length(s) = 0 is
-  | True -> None
-  | False -> Some(s)
+  | true -> None
+  | false -> Some(s)
 
 
 fun parse_request_line(line) =
