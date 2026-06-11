@@ -16,7 +16,7 @@ fun inspect_json(json) =
   | Json_null -> "Json_null"
   | Json_bool(true) -> "Json_bool(true)"
   | Json_bool(false) -> "Json_bool(false)"
-  | Json_number(n) -> "Json_number" ++ paren(String.from_float(n))
+  | Json_int(n) -> "Json_number" ++ paren(String.from_int(n))
 
 
 fun parse_ident(chars) =

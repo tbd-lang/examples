@@ -292,3 +292,89 @@ pub fun min(l) =
       | false -> b
     in
     Some(fold_left(fun(a, b) -> pick(a, b), hd, tl))
+
+
+-- Collects all elements that match predicate in a row
+--
+-- Example:
+-- 
+-- ```tbd
+-- import stdlib.Assert
+-- import stdlib.Char
+--  
+--
+-- let chars = ['1', '2', '3', 'x'] in
+-- let {numbers, rest} = collect_while(Char.is_digit, chars) in
+--
+-- Assert.equals(numbers, ['1', '2', '3']
+-- Assert.equals(rest, ['x']) then
+-- ```
+--
+-- fun(fun($a) -> bool, [$a]) -> {[$a], [$a]}
+pub fun collect_while(predicate, list) =
+  fun aux(list, collected) =
+    match list with
+    | [] -> {rev(collected), []}
+    | hd :: tl ->
+      match predicate(hd) with
+      | true -> aux(tl, hd :: collected)
+      | false -> {rev(collected), list}
+  in
+  aux(list, [])
+
+
+-- Collects all elements that don't match predicate in a row
+--
+-- Example:
+-- 
+-- ```tbd
+-- import stdlib.Assert
+-- import stdlib.Char
+--  
+--
+-- let chars = ['a', 'b', 'c', '0'] in
+-- let {letters, rest} = collect_until(Char.is_digit, chars) in
+--
+-- Assert.equals(letters, ['a', 'b', 'c']) then
+-- Assert.equals(rest, ['0']
+-- ```
+--
+-- fun(fun($a) -> bool, [$a]) -> {[$a], [$a]}
+pub fun collect_until(predicate, list) =
+  fun aux(list, collected) =
+    match list with
+    | [] -> {rev(collected), []}
+    | hd :: tl ->
+      match predicate(hd) with
+      | true -> {rev(collected), list}
+      | false -> aux(tl, hd :: collected)
+  in
+  aux(list, [])
+
+
+
+-- should probably move into a tests folder?
+import stdlib.Io
+
+
+fun test(name, f) =
+  Io.println(name) then
+  f()
+
+
+pub fun test_collect_while() =
+  test("collect_while", fun() ->
+    fun is_digit(c) = c >= '0' && c <= '9' in
+    let l = ['0', '1', '2', 'x'] in
+    let {numbers, chars} = collect_while(fun(c) -> is_digit(c), l) in
+    Io.printfln("~w", [numbers]) then
+    Io.printfln("~w", [chars]))
+
+
+pub fun test_collect_until() =
+  test("collect_while", fun() ->
+    fun is_digit(c) = c >= '0' && c <= '9' in
+    let l = ['a', 'b', 'c', '0'] in
+    let {numbers, chars} = collect_until(fun(c) -> is_digit(c), l) in
+    Io.printfln("~w", [numbers]) then
+    Io.printfln("~w", [chars]))

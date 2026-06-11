@@ -147,7 +147,7 @@ pub fun replace(s, old, new) =
 --
 -- Example:
 --   from_integer(42)  # => "42"
-pub extern from_integer(n) = "erlang:integer_to_binary"
+pub extern from_int(n) = "erlang:integer_to_binary"
 
 
 -- Parses a decimal string to an integer. Returns Some(n) or None on failure.
@@ -156,9 +156,9 @@ pub extern from_integer(n) = "erlang:integer_to_binary"
 -- Example:
 --   to_integer("42")   # => Some(42)
 --   to_integer("abc")  # => None
-extern erlang_to_integer(s) = "erlang:binary_to_integer"
-pub fun to_integer(s) =
-  match erlang_to_integer(s) with
+extern erlang_to_int(s) = "erlang:binary_to_integer"
+pub fun to_int(s) =
+  match erlang_to_int(s) with
   | Error(_) -> None
   | n -> Some(n)
 

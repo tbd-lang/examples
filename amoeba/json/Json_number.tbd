@@ -20,7 +20,7 @@ fun convert_number_chars(negative, f, number_chars) =
   | None -> Process.exit(Parse_number_error)
 
 
-fun parse_float(chars) =
+fun parse_float(negative, chars) =
   fun aux(chars, number_chars) =
     match chars with
     | [] -> {[], number_chars}
@@ -28,18 +28,34 @@ fun parse_float(chars) =
     | c :: chars when c >= '0' && c <= '9' -> aux(chars, c :: number_chars)
     | _ -> Process.exit(Parse_number_error)
   in
-  aux(chars, [])
+  let {chars, number_chars} = aux(chars, []) in
+  let number =
+    convert_number_chars(
+      negative,
+      fun(v) -> String.to_float(v),
+      number_chars) 
+  in
+  {chars, Json_float(number)}
 
 
-fun parse_int(chars) =
+fun parse_int(negative, chars) =
   fun aux(chars, number_chars) =
     match chars with
     | [] -> {[], number_chars}
-    | '.' :: _ -> parse_float(List.append(number_chars, chars))
+    | '.' :: _ ->
+      let chars = List.append(number_chars, chars) in
+      parse_float(negative, chars)
     | c :: chars when c >= '0' && c <= '9' -> aux(chars, c :: number_chars)
     | _ -> Process.exit(Parse_number_error)
   in
-  aux(chars, [])
+  let {chars, number_chars} = aux(chars, []) in
+  let number =
+    convert_number_chars(
+      negative,
+      fun(v) -> String.to_int(v),
+      number_chars) 
+  in
+  {chars, Json_int(number)}
 
 
 pub fun parse(chars) =
@@ -48,16 +64,7 @@ pub fun parse(chars) =
     | '-' :: chars -> {true, chars}
     | _ -> {false, chars}
   in
-  let {chars, number_chars} =
-    match chars with
-    | '0' :: _ -> parse_float(chars)
-    | c :: _ when c >= '1' && c <= '9' -> parse_int(chars)
-    | _ -> Process.exit(Parse_number_error)
-  in
-  let number =
-    convert_number_chars(
-      negative,
-      fun(v) -> String.to_float(v),
-      number_chars)
-  in
-  {chars, Json_number(number)}
+  match chars with
+  | '0' :: _ -> parse_float(negative, chars)
+  | c :: _ when c >= '1' && c <= '9' -> parse_int(negative, chars)
+  | _ -> Process.exit(Parse_number_error)
