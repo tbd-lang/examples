@@ -1,4 +1,4 @@
-### Following process defined in `https://www.json.org/json-en.html`
+-- Following process defined in `https://www.json.org/json-en.html`
 
 import stdlib.String
 import stdlib.List
