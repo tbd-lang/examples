@@ -363,18 +363,22 @@ fun test(name, f) =
 
 
 pub fun test_collect_while() =
-  test("collect_while", fun() ->
-    fun is_digit(c) = c >= '0' && c <= '9' in
-    let l = ['0', '1', '2', 'x'] in
-    let {numbers, chars} = collect_while(fun(c) -> is_digit(c), l) in
-    Io.printfln("~w", [numbers]) then
-    Io.printfln("~w", [chars]))
+  test(
+    "collect_while",
+    fun() ->
+      fun is_digit(c) = c >= '0' && c <= '9' in
+      let l = ['0', '1', '2', 'x'] in
+      let {numbers, chars} = collect_while(fun(c) -> is_digit(c), l) in
+      Io.printfln("~w", [numbers]) then
+      Io.printfln("~w", [chars]))
 
 
 pub fun test_collect_until() =
-  test("collect_while", fun() ->
-    fun is_digit(c) = c >= '0' && c <= '9' in
-    let l = ['a', 'b', 'c', '0'] in
-    let {numbers, chars} = collect_until(fun(c) -> is_digit(c), l) in
-    Io.printfln("~w", [numbers]) then
-    Io.printfln("~w", [chars]))
+  test(
+    "collect_while",
+    fun() ->
+      fun is_digit(c) = c >= '0' && c <= '9' in
+      let l = ['a', 'b', 'c', '0'] in
+      let {numbers, chars} = collect_until(fun(c) -> is_digit(c), l) in
+      Io.printfln("~w", [numbers]) then
+      Io.printfln("~w", [chars]))

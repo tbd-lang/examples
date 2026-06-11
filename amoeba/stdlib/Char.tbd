@@ -1,0 +1,5 @@
+pub fun is_numeric(c) = c >= '0' && c <= '9'
+pub fun is_upper(c) = c >= 'A' && c <= 'Z'
+pub fun is_lower(c) = c >= 'a' && c <= 'z'
+pub fun is_alpha(c) = is_upper(c) || is_lower(c)
+pub fun is_alpha_numeric(c) = is_alpha(c) || is_numeric(c)
