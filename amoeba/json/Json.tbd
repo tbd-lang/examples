@@ -17,6 +17,7 @@ fun inspect_json(json) =
   | Json_bool(true) -> "Json_bool(true)"
   | Json_bool(false) -> "Json_bool(false)"
   | Json_int(n) -> "Json_number" ++ paren(String.from_int(n))
+  | Json_float(f) -> "Json_float" ++ paren(String.from_float(f))
 
 
 fun parse_ident(chars) =
@@ -54,6 +55,6 @@ fun parse(chars) =
 
 
 pub fun test() =
-  [ "null", "true", "false", "12.34" ]
+  [ "null", "true", "false", "12.34", "1234" ]
   |> List.map(fun(c) -> parse(String.to_bytes(c)))
   |> List.iter(fun([j]) -> Io.printfln("~s", [inspect_json(j)]))
