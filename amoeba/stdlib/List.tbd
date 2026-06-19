@@ -382,3 +382,12 @@ pub fun test_collect_until() =
       let {numbers, chars} = collect_until(fun(c) -> is_digit(c), l) in
       Io.printfln("~w", [numbers]) then
       Io.printfln("~w", [chars]))
+
+
+pub fun find(predicate, l) =
+  match l with
+  | hd :: tl ->
+    (match predicate(hd) with
+    | true -> Some(hd)
+    | false -> find(predicate, tl))
+  | _ -> None

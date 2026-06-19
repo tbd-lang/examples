@@ -1,5 +1,44 @@
-import json.Json
+import stdlib.Io
+import stdlib.Int
+import stdlib.List
 
 
-pub fun main() = Json.test()
+fun quote(s) = "\"" ++ s ++ "\""
 
+
+fun expr_to_string(expr) =
+  match expr with
+  | EUnit -> "EUnit"
+  | EInt(n) -> "EInt(" ++ Int.to_string(n) ++ ")"
+  | EFloat(f) -> "EFloat(" ++ Int.to_string(f) ++ ")"  -- just for testing
+  | EVar(s) -> "EVar(" ++ quote(s) ++ ")"
+  | ELet(var, expr, next) ->
+    let var = expr_to_string(var) in
+    let expr = expr_to_string(expr) in
+    let next = expr_to_string(next) in
+    "ELet(" ++ var ++ ", " ++ expr ++ ", " ++ next ++ ")"
+
+
+fun expr_to_kind(env, expr) =
+  match expr with
+  | EUnit -> KUnit
+  | EInt(n) -> KInt
+  | EFloat(f) -> KFloat
+  | EVar(s) ->
+    (match List.find(fun({s', _}) -> s' = s, env) with
+    | Some({_, kind}) -> kind
+    | None -> KUnknown)
+  | ELet(name, expr, next) ->
+    let kind = expr_to_kind(env, expr) in
+    let env = {name, kind} :: env in
+    expr_to_kind(env, next)
+
+
+pub fun main() =
+  let expr = ELet("x", EInt(1), ELet("y", EVar("x"), EVar("y"))) in
+  let kind = expr_to_kind([], expr) in
+  Io.printf("~w\n", [kind])       -- should be KInt
+
+  then let expr = ELet("x", EFloat(1), ELet("y", EVar("x"), EVar("y"))) in
+  let kind = expr_to_kind([], expr) in
+  Io.printf("~w\n", [kind])       -- should be KFloat

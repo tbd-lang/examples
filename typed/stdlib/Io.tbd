@@ -1,0 +1,2 @@
+pub extern printf(f: string, args: [$a]): () = "io:format"
+pub fun println(s: string): () = printf(s ++ "\n", [])

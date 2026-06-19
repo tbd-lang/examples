@@ -1,0 +1,11 @@
+import stdlib.Io
+
+
+fun add(a: int, b: int): int = a + b
+
+
+pub fun main(): () =
+  let a: int = 1 in
+  let b: int = 2 in
+  let c: int = add(a, b) in
+  Io.printf("~w\n", [c])
