@@ -1,9 +1,9 @@
-function loop(ping):
+functionction loop(ping):
   receive:
   | Ping -> Io.println("Pong"); send(ping, Pong); loop(ping)
   | Stop -> ()
 
 
-public function init():
+publiclic functionction init():
   receive:
   | Init(ping) -> loop(ping)

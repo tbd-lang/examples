@@ -1,12 +1,12 @@
-functor Database_table(Database_driver, M) = struct
+functionctor Database_table(Database_driver, M) = struct
 
-  pub fun create_table() = 
+  public function create_table() = 
     let table_name = M.get_table_name() in
     let sql = "create table " ++ table_name in
     let conn = Database_driver.get_conn() in
     Database_driver.execute(conn, sql)
   
-  pub fun drop_table() =
+  public function drop_table() =
     let table_name = M.get_table_name() in
     let sql = "drop table " ++ table_name in
     let conn = Database_driver.get_conn() in
@@ -16,18 +16,18 @@ end
 
 
 module Postgres_driver = struct
-  pub fun get_conn() = ""
-  pub fun execute(conn, sql) = ""
+  public function get_conn() = ""
+  public function execute(conn, sql) = ""
 end
 
 
 module User = struct
-  pub fun get_table_name() = "users"
+  public function get_table_name() = "users"
 end
 
 
 module Post = struct
-  pub fun get_table_name() = "posts"
+  public function get_table_name() = "posts"
 end
 
 
@@ -35,7 +35,7 @@ module User_table = Database_table(Postgres_driver, User)
 module Post_table = Database_table(Postgres_driver, Post)
 
 
-fun main() =
+function main() =
   User_table.create_table() then
   Post_table.create_table() then
   ...

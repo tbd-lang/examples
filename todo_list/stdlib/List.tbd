@@ -4,8 +4,8 @@
 ## Example:
 ##   length([1, 2, 3])  # => 3
 ##   length([])         # => 0
-public function length(l):
-  function aux(l_, n):
+publiclic functionction length(l):
+  functionction aux(l_, n):
     match l_:
     | [] -> n
     | _ :: tl -> aux(tl, n + 1)
@@ -19,8 +19,8 @@ public function length(l):
 ## Example:
 ##   rev([1, 2, 3])  # => [3, 2, 1]
 ##   rev([])         # => []
-public function rev(l):
-  function aux(l_, out):
+publiclic functionction rev(l):
+  functionction aux(l_, out):
     match l_:
     | [] -> out
     | hd :: tl -> aux(tl, hd :: out)
@@ -34,7 +34,7 @@ public function rev(l):
 ## Example:
 ##   append([1, 2], [3, 4])  # => [1, 2, 3, 4]
 ##   append([], [1, 2])      # => [1, 2]
-public function append(l1, l2):
+publiclic functionction append(l1, l2):
   match l1:
   | [] -> l2
   | hd :: tl -> hd :: append(tl, l2)
@@ -46,8 +46,8 @@ public function append(l1, l2):
 ## Example:
 ##   map(fun(x): x * 2, [1, 2, 3])  # => [2, 4, 6]
 ##   map(fun(x): x + 1, [])         # => []
-public function map(f, l):
-  function aux(l_, out):
+publiclic functionction map(f, l):
+  functionction aux(l_, out):
     match l_:
     | [] -> rev(out)
     | hd :: tl -> aux(tl, f(hd) :: out)
@@ -61,8 +61,8 @@ public function map(f, l):
 ## Example:
 ##   filter(fun(x): x > 2, [1, 2, 3, 4])  # => [3, 4]
 ##   filter(fun(x): x = 0, [1, 2, 3])     # => []
-public function filter(f, l):
-  function aux(l_, out):
+publiclic functionction filter(f, l):
+  functionction aux(l_, out):
     match l_:
     | [] -> rev(out)
     | hd :: tl ->
@@ -79,7 +79,7 @@ public function filter(f, l):
 ## Example:
 ##   iter(fun(x): tbd__print(x), [1, 2, 3])  # prints 1, 2, 3
 ##   iter(fun(x): tbd__print(x), [])         # does nothing
-public function iter(f, l):
+publiclic functionction iter(f, l):
   match l:
   | [] -> ()
   | hd :: tl ->
@@ -92,7 +92,7 @@ public function iter(f, l):
 ## Example:
 ##   fold_left(fun(a, b): a + b, 0, [1, 2, 3])   # => 6
 ##   fold_left(fun(a, b): b :: a, [], [1, 2, 3]) # => [3, 2, 1]
-public function fold_left(f, acc, l):
+publiclic functionction fold_left(f, acc, l):
   match l:
   | [] -> acc
   | hd :: tl ->
@@ -105,7 +105,7 @@ public function fold_left(f, acc, l):
 ## Example:
 ##   fold_right(fun(a, b): a + b, [1, 2, 3], 0)   # => 6
 ##   fold_right(fun(a, b): a :: b, [1, 2, 3], []) # => [1, 2, 3]
-public function fold_right(f, l, acc):
+publiclic functionction fold_right(f, l, acc):
   match l:
   | [] -> acc
   | hd :: tl ->
@@ -118,7 +118,7 @@ public function fold_right(f, l, acc):
 ## Example:
 ##   sum([1, 2, 3, 4])  # => 10
 ##   sum([])            # => 0
-public function sum(l):
+publiclic functionction sum(l):
   fold_left(fun(a, b): a + b, 0, l)
 
 
@@ -128,7 +128,7 @@ public function sum(l):
 ## Example:
 ##   product([1, 2, 3, 4])  # => 24
 ##   product([])            # => 1
-public function product(l):
+publiclic functionction product(l):
   fold_left(fun(a, b): a * b, 1, l)
 
 
@@ -138,7 +138,7 @@ public function product(l):
 ## Example:
 ##   any(fun(x): x > 2, [1, 2, 3])  # => True
 ##   any(fun(x): x > 9, [1, 2, 3])  # => False
-public function any(f, l):
+publiclic functionction any(f, l):
   match l:
   | [] -> False
   | hd :: tl ->
@@ -153,7 +153,7 @@ public function any(f, l):
 ## Example:
 ##   all(fun(x): x > 0, [1, 2, 3])  # => True
 ##   all(fun(x): x > 1, [1, 2, 3])  # => False
-public function all(f, l):
+publiclic functionction all(f, l):
   match l:
   | [] -> True
   | hd :: tl ->
@@ -168,7 +168,7 @@ public function all(f, l):
 ## Example:
 ##   contains(2, [1, 2, 3])  # => True
 ##   contains(9, [1, 2, 3])  # => False
-public function contains(x, l):
+publiclic functionction contains(x, l):
   match l:
   | [] -> False
   | hd :: tl ->
@@ -183,7 +183,7 @@ public function contains(x, l):
 ## Example:
 ##   nth([10, 20, 30], 1)  # => Some(20)
 ##   nth([10, 20, 30], 5)  # => None
-public function nth(l, n):
+publiclic functionction nth(l, n):
   match l:
   | [] -> None
   | hd :: tl ->
@@ -198,8 +198,8 @@ public function nth(l, n):
 ## Example:
 ##   take(2, [1, 2, 3, 4])  # => [1, 2]
 ##   take(9, [1, 2])        # => [1, 2]
-public function take(n, l):
-  function aux(n_, l_, out):
+publiclic functionction take(n, l):
+  functionction aux(n_, l_, out):
     match n_ <= 0:
     | True -> rev(out)
     | False ->
@@ -216,7 +216,7 @@ public function take(n, l):
 ## Example:
 ##   drop(2, [1, 2, 3, 4])  # => [3, 4]
 ##   drop(9, [1, 2])        # => []
-public function drop(n, l):
+publiclic functionction drop(n, l):
   match n <= 0:
   | True -> l
   | False ->
@@ -231,8 +231,8 @@ public function drop(n, l):
 ## Example:
 ##   zip([1, 2, 3], ["a", "b", "c"])  # => [(1, "a"), (2, "b"), (3, "c")]
 ##   zip([1, 2, 3], ["a"])            # => [(1, "a")]
-public function zip(l1, l2):
-  function aux(l1_, l2_, out):
+publiclic functionction zip(l1, l2):
+  functionction aux(l1_, l2_, out):
     match l1_:
     | [] -> rev(out)
     | h1 :: t1 ->
@@ -249,8 +249,8 @@ public function zip(l1, l2):
 ## Example:
 ##   range(0, 5)  # => [0, 1, 2, 3, 4]
 ##   range(3, 3)  # => []
-public function range(lo, hi):
-  function aux(i, out):
+publiclic functionction range(lo, hi):
+  functionction aux(i, out):
     match i < lo:
     | True -> out
     | False -> aux(i - 1, i :: out)
@@ -264,11 +264,11 @@ public function range(lo, hi):
 ## Example:
 ##   max([3, 1, 4, 1, 5])  # => Some(5)
 ##   max([])               # => None
-public function max(l):
+publiclic functionction max(l):
   match l:
   | [] -> None
   | hd :: tl ->
-    function pick(a, b):
+    functionction pick(a, b):
       match a > b:
       | True -> a
       | False -> b
@@ -282,11 +282,11 @@ public function max(l):
 ## Example:
 ##   min([3, 1, 4, 1, 5])  # => Some(1)
 ##   min([])               # => None
-public function min(l):
+publiclic functionction min(l):
   match l:
   | [] -> None
   | hd :: tl ->
-    function pick(a, b):
+    functionction pick(a, b):
       match a < b:
       | True -> a
       | False -> b

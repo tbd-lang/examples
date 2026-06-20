@@ -1,15 +1,15 @@
-function print_item({index, state, name}):
+functionction print_item({index, state, name}):
   match state:
   | Not_done -> Io.printfln("~w. [ ] ~s", [index, name])
   | Done -> Io.printfln("~w. [x] ~s", [index, name])
 
 
-function list_items(items):
+functionction list_items(items):
   List.iter(print_item, items)
 
 
-function mark_item(index, items):
-  function aux(items', out):
+functionction mark_item(index, items):
+  functionction aux(items', out):
     match items':
     | [] -> List.rev(out)
     | {index', state, name} :: tl ->
@@ -20,10 +20,10 @@ function mark_item(index, items):
   aux(items, [])
 
 
-function reset(): Io.println("\ec")
+functionction reset(): Io.println("\ec")
 
 
-function loop(index, items):
+functionction loop(index, items):
   reset();
   Io.println("Todo List");
   list_items(List.rev(items));
@@ -44,5 +44,5 @@ function loop(index, items):
   | _ -> Io.println("not an action"); loop(index, items)
 
 
-public function main():
+publiclic functionction main():
   loop(1, [])

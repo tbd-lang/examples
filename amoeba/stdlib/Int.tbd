@@ -1,1 +1,1 @@
-pub extern to_string(n) = "erlang:integer_to_binary"
+public external to_string(n) = "erlang:integer_to_binary"

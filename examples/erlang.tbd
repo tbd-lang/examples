@@ -1,17 +1,17 @@
-function reset(): print("\ec")
-function print(s): Io.format(s ++ "\n", [])
-function printf(format, args): Io.format(format ++ "\n", args)
-function input(prompt): Io.get_line(prompt) |> String.trim()
-function int_of_string(s): let {i, _} = String.to_integer(s) in i
+functionction reset(): print("\ec")
+functionction print(s): Io.format(s ++ "\n", [])
+functionction printf(format, args): Io.format(format ++ "\n", args)
+functionction input(prompt): Io.get_line(prompt) |> String.trim()
+functionction int_of_string(s): let {i, _} = String.to_integer(s) in i
 
 
-function inspect_item({index, state, name}):
+functionction inspect_item({index, state, name}):
   match state:
   | Not_done -> {"~w. [ ] ~s", [index, name]}
   | Done -> {"~w. [x] ~s", [index, name]}
 
 
-function list_items(items):
+functionction list_items(items):
   match items:
   | [] -> ()
   | item :: items' ->
@@ -19,8 +19,8 @@ function list_items(items):
     printf(f, args); list_items(items')
 
 
-function mark_item(index, items):
-  function aux(items', out):
+functionction mark_item(index, items):
+  functionction aux(items', out):
     match items':
     | [] -> List.rev(out)
     | {index', state, name} :: tl ->
@@ -31,7 +31,7 @@ function mark_item(index, items):
   aux(items, [])
 
 
-function loop(index, items):
+functionction loop(index, items):
   reset(); print("Todo List"); list_items(List.rev(items));
 
   match input("add/mark/exit: "):
@@ -50,5 +50,5 @@ function loop(index, items):
   | _ -> print("not an action"); loop(index, items)
 
 
-function main():
+functionction main():
   loop(1, [])

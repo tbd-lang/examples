@@ -4,8 +4,8 @@
 -- Example:
 --   length([1, 2, 3])  # => 3
 --   length([])         # => 0
-pub fun length(l) =
-  fun aux(l, n) =
+public function length(l) =
+  function aux(l, n) =
     match l with
     | [] -> n
     | _ :: tl -> aux(tl, n + 1)
@@ -19,8 +19,8 @@ pub fun length(l) =
 -- Example:
 --   rev([1, 2, 3])  # => [3, 2, 1]
 --   rev([])         # => []
-pub fun rev(l) =
-  fun aux(l, out) =
+public function rev(l) =
+  function aux(l, out) =
     match l with
     | [] -> out
     | hd :: tl -> aux(tl, hd :: out)
@@ -34,7 +34,7 @@ pub fun rev(l) =
 -- Example:
 --   append([1, 2], [3, 4])  # => [1, 2, 3, 4]
 --   append([], [1, 2])      # => [1, 2]
-pub fun append(l1, l2) =
+public function append(l1, l2) =
   match l1 with
   | [] -> l2
   | hd :: tl -> hd :: append(tl, l2)
@@ -46,8 +46,8 @@ pub fun append(l1, l2) =
 -- Example:
 --   map(fun(x) = x * 2, [1, 2, 3])  # => [2, 4, 6]
 --   map(fun(x) = x + 1, [])         # => []
-pub fun map(f, l) =
-  fun aux(l, out) =
+public function map(f, l) =
+  function aux(l, out) =
     match l with
     | [] -> rev(out)
     | hd :: tl -> aux(tl, f(hd) :: out)
@@ -61,8 +61,8 @@ pub fun map(f, l) =
 -- Example:
 --   filter(fun(x) = x > 2, [1, 2, 3, 4])  # => [3, 4]
 --   filter(fun(x) = x = 0, [1, 2, 3])     # => []
-pub fun filter(f, l) =
-  fun aux(l, out) =
+public function filter(f, l) =
+  function aux(l, out) =
     match l with
     | [] -> rev(out)
     | hd :: tl ->
@@ -79,7 +79,7 @@ pub fun filter(f, l) =
 -- Example:
 --   iter(fun(x) = tbd__print(x), [1, 2, 3])  # prints 1, 2, 3
 --   iter(fun(x) = tbd__print(x), [])         # does nothing
-pub fun iter(f, l) =
+public function iter(f, l) =
   match l with
   | [] -> ()
   | hd :: tl ->
@@ -92,7 +92,7 @@ pub fun iter(f, l) =
 -- Example:
 --   fold_left(fun(a, b) -> a + b, 0, [1, 2, 3])   # => 6
 --   fold_left(fun(a, b) = b :: a, [], [1, 2, 3]) # => [3, 2, 1]
-pub fun fold_left(f, acc, l) =
+public function fold_left(f, acc, l) =
   match l with
   | [] -> acc
   | hd :: tl ->
@@ -105,7 +105,7 @@ pub fun fold_left(f, acc, l) =
 -- Example:
 --   fold_right(fun(a, b) -> a + b, [1, 2, 3], 0)   # => 6
 --   fold_right(fun(a, b) = a :: b, [1, 2, 3], []) # => [1, 2, 3]
-pub fun fold_right(f, l, acc) =
+public function fold_right(f, l, acc) =
   match l with
   | [] -> acc
   | hd :: tl ->
@@ -118,7 +118,7 @@ pub fun fold_right(f, l, acc) =
 -- Example:
 --   sum([1, 2, 3, 4])  # => 10
 --   sum([])            # => 0
-pub fun sum(l) =
+public function sum(l) =
   fold_left(fun(a, b) -> a + b, 0, l)
 
 
@@ -128,7 +128,7 @@ pub fun sum(l) =
 -- Example:
 --   product([1, 2, 3, 4])  # => 24
 --   product([])            # => 1
-pub fun product(l) =
+public function product(l) =
   fold_left(fun(a, b) -> a * b, 1, l)
 
 
@@ -138,7 +138,7 @@ pub fun product(l) =
 -- Example:
 --   any(fun(x) = x > 2, [1, 2, 3])  # => true
 --   any(fun(x) = x > 9, [1, 2, 3])  # => false
-pub fun any(f, l) =
+public function any(f, l) =
   match l with
   | [] -> false
   | hd :: tl ->
@@ -153,7 +153,7 @@ pub fun any(f, l) =
 -- Example:
 --   all(fun(x) = x > 0, [1, 2, 3])  # => true
 --   all(fun(x) = x > 1, [1, 2, 3])  # => false
-pub fun all(f, l) =
+public function all(f, l) =
   match l with
   | [] -> true
   | hd :: tl ->
@@ -168,7 +168,7 @@ pub fun all(f, l) =
 -- Example:
 --   contains(2, [1, 2, 3])  # => true
 --   contains(9, [1, 2, 3])  # => false
-pub fun contains(x, l) =
+public function contains(x, l) =
   match l with
   | [] -> false
   | hd :: tl ->
@@ -183,7 +183,7 @@ pub fun contains(x, l) =
 -- Example:
 --   nth([10, 20, 30], 1)  # => Some(20)
 --   nth([10, 20, 30], 5)  # => None
-pub fun nth(l, n) =
+public function nth(l, n) =
   match l with
   | [] -> None
   | hd :: tl ->
@@ -198,8 +198,8 @@ pub fun nth(l, n) =
 -- Example:
 --   take(2, [1, 2, 3, 4])  # => [1, 2]
 --   take(9, [1, 2])        # => [1, 2]
-pub fun take(n, l) =
-  fun aux(n, l, out) =
+public function take(n, l) =
+  function aux(n, l, out) =
     match n <= 0 with
     | true -> rev(out)
     | false ->
@@ -216,7 +216,7 @@ pub fun take(n, l) =
 -- Example:
 --   drop(2, [1, 2, 3, 4])  # => [3, 4]
 --   drop(9, [1, 2])        # => []
-pub fun drop(n, l) =
+public function drop(n, l) =
   match n <= 0 with
   | true -> l
   | false ->
@@ -231,8 +231,8 @@ pub fun drop(n, l) =
 -- Example:
 --   zip([1, 2, 3], ["a", "b", "c"])  # => [(1, "a"), (2, "b"), (3, "c")]
 --   zip([1, 2, 3], ["a"])            # => [(1, "a")]
-pub fun zip(l1, l2) =
-  fun aux(l1, l2, out) =
+public function zip(l1, l2) =
+  function aux(l1, l2, out) =
     match l1 with
     | [] -> rev(out)
     | h1 :: t1 ->
@@ -249,8 +249,8 @@ pub fun zip(l1, l2) =
 -- Example:
 --   range(0, 5)  # => [0, 1, 2, 3, 4]
 --   range(3, 3)  # => []
-pub fun range(lo, hi) =
-  fun aux(i, out) =
+public function range(lo, hi) =
+  function aux(i, out) =
     match i < lo with
     | true -> out
     | false -> aux(i - 1, i :: out)
@@ -264,11 +264,11 @@ pub fun range(lo, hi) =
 -- Example:
 --   max([3, 1, 4, 1, 5])  # => Some(5)
 --   max([])               # => None
-pub fun max(l) =
+public function max(l) =
   match l with
   | [] -> None
   | hd :: tl ->
-    fun pick(a, b) =
+    function pick(a, b) =
       match a > b with
       | true -> a
       | false -> b
@@ -282,11 +282,11 @@ pub fun max(l) =
 -- Example:
 --   min([3, 1, 4, 1, 5])  # => Some(1)
 --   min([])               # => None
-pub fun min(l) =
+public function min(l) =
   match l with
   | [] -> None
   | hd :: tl ->
-    fun pick(a, b) =
+    function pick(a, b) =
       match a < b with
       | true -> a
       | false -> b
@@ -311,8 +311,8 @@ pub fun min(l) =
 -- ```
 --
 -- fun(fun($a) -> bool, [$a]) -> {[$a], [$a]}
-pub fun collect_while(predicate, list) =
-  fun aux(list, collected) =
+public function collect_while(predicate, list) =
+  function aux(list, collected) =
     match list with
     | [] -> {rev(collected), []}
     | hd :: tl ->
@@ -340,8 +340,8 @@ pub fun collect_while(predicate, list) =
 -- ```
 --
 -- fun(fun($a) -> bool, [$a]) -> {[$a], [$a]}
-pub fun collect_until(predicate, list) =
-  fun aux(list, collected) =
+public function collect_until(predicate, list) =
+  function aux(list, collected) =
     match list with
     | [] -> {rev(collected), []}
     | hd :: tl ->
@@ -357,34 +357,34 @@ pub fun collect_until(predicate, list) =
 import stdlib.Io
 
 
-fun test(name, f) =
+function test(name, f) =
   Io.println(name) then
   f()
 
 
-pub fun test_collect_while() =
+public function test_collect_while() =
   test(
     "collect_while",
     fun() ->
-      fun is_digit(c) = c >= '0' && c <= '9' in
+      function is_digit(c) = c >= '0' && c <= '9' in
       let l = ['0', '1', '2', 'x'] in
       let {numbers, chars} = collect_while(fun(c) -> is_digit(c), l) in
       Io.printfln("~w", [numbers]) then
       Io.printfln("~w", [chars]))
 
 
-pub fun test_collect_until() =
+public function test_collect_until() =
   test(
     "collect_while",
     fun() ->
-      fun is_digit(c) = c >= '0' && c <= '9' in
+      function is_digit(c) = c >= '0' && c <= '9' in
       let l = ['a', 'b', 'c', '0'] in
       let {numbers, chars} = collect_until(fun(c) -> is_digit(c), l) in
       Io.printfln("~w", [numbers]) then
       Io.printfln("~w", [chars]))
 
 
-pub fun find(predicate, l) =
+public function find(predicate, l) =
   match l with
   | hd :: tl ->
     (match predicate(hd) with

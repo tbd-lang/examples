@@ -4,11 +4,11 @@ import stdlib.List
 import stdlib.Logging
 
 
-pub fun new(path, method, headers, body) =
+public function new(path, method, headers, body) =
   Http_request(path, method, headers, body)
 
 
-pub fun inspect(Http_request(path, method, headers, body)) =
+public function inspect(Http_request(path, method, headers, body)) =
   Io.printfln("path = ~s", [path]) then
   Io.printfln("method = ~s", [method]) then
   List.iter(fun({key, value}) -> Io.printfln("~s = ~s", [key, value]), headers) then
@@ -17,7 +17,7 @@ pub fun inspect(Http_request(path, method, headers, body)) =
   | None -> ()
 
 
-fun parse_header(line) =
+function parse_header(line) =
   match String.find(line, ":") with
   | None -> None
   | Some(pos) ->
@@ -26,8 +26,8 @@ fun parse_header(line) =
     Some({key, value})
 
 
-fun parse_headers(lines) =
-  fun aux(lines, out) =
+function parse_headers(lines) =
+  function aux(lines, out) =
     match lines with
     | [] -> List.rev(out)
     | hd :: tl ->
@@ -38,19 +38,19 @@ fun parse_headers(lines) =
   aux(lines, [])
 
 
-fun non_empty(s) =
+function non_empty(s) =
   match String.byte_length(s) = 0 with
   | true -> None
   | false -> Some(s)
 
 
-fun parse_request_line(line) =
+function parse_request_line(line) =
   match String.split(line, " ") with
   | method :: path :: _ -> Some({method, path})
   | _ -> None
 
 
-pub fun parse(raw) =
+public function parse(raw) =
   Logging.debug("Parsing raw request: ~s", [raw]) then
   match String.split(raw, "\r\n\r\n") with
   | head :: rest ->

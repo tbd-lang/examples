@@ -8,10 +8,10 @@ import stdlib.Process
 import json.Json_number
 
 
-fun paren(s) = "(" ++ s ++ ")"
+function paren(s) = "(" ++ s ++ ")"
 
 
-fun inspect_json(json) =
+function inspect_json(json) =
   match json with
   | Json_null -> "Json_null"
   | Json_bool(true) -> "Json_bool(true)"
@@ -20,8 +20,8 @@ fun inspect_json(json) =
   | Json_float(f) -> "Json_float" ++ paren(String.from_float(f))
 
 
-fun parse_ident(chars) =
-  fun aux(chars, ident) =
+function parse_ident(chars) =
+  function aux(chars, ident) =
     match chars with
     | c :: tl when c >= 'a' && c <= 'z' -> aux(tl, c :: ident)
     | _ ->
@@ -39,8 +39,8 @@ fun parse_ident(chars) =
   {chars, ident}
 
 
-fun parse(chars) =
-  fun aux(chars, tokens) =
+function parse(chars) =
+  function aux(chars, tokens) =
     match chars with
     | [] -> tokens
     | c :: _ when c >= 'a' && c <= 'z' ->
@@ -54,7 +54,7 @@ fun parse(chars) =
   aux(chars, [])
 
 
-pub fun test() =
+public function test() =
   [ "null", "true", "false", "12.34", "1234" ]
   |> List.map(fun(c) -> parse(String.to_bytes(c)))
   |> List.iter(fun([j]) -> Io.printfln("~s", [inspect_json(j)]))

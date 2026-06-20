@@ -1,7 +1,7 @@
-public external printf(f, args): io:format
-public function print(s): printf(s, [])
-public function printfln(f, args): printf(f ++ "\n", args)
-public function println(s): printfln(s, [])
+publiclic externalal printf(f, args): io:format
+publiclic functionction print(s): printf(s, [])
+publiclic functionction printfln(f, args): printf(f ++ "\n", args)
+publiclic functionction println(s): printfln(s, [])
 
-external erlang_input(prompt): io:get_line
-public function input(prompt): erlang_input(prompt) |> String.trim()
+externalal erlang_input(prompt): io:get_line
+publiclic functionction input(prompt): erlang_input(prompt) |> String.trim()

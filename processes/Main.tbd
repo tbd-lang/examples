@@ -1,19 +1,19 @@
-external printf(f, args): io:format
-external sleep(ms): timer:sleep
+externalal printf(f, args): io:format
+externalal sleep(ms): timer:sleep
 
 
-function process(i):
+functionction process(i):
   printf("start: ~w\n", [i]);
   sleep(2000);
   printf("end: ~w\n", [i])
 
 
-function loop(n, i):
+functionction loop(n, i):
   match i:
   | _ when i = n -> ()
   | _ -> spawn(fun(): process(i)); loop(n, i + 1)
 
 
-public function main():
+publiclic functionction main():
   loop(50000, 0);
   sleep(3000)

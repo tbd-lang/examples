@@ -1,1 +1,1 @@
-pub extern peername(socket) = "inet:peername"
+public external peername(socket) = "inet:peername"

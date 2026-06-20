@@ -3,10 +3,10 @@ import stdlib.Int
 import stdlib.List
 
 
-fun quote(s) = "\"" ++ s ++ "\""
+function quote(s) = "\"" ++ s ++ "\""
 
 
-fun expr_to_string(expr) =
+function expr_to_string(expr) =
   match expr with
   | EUnit -> "EUnit"
   | EInt(n) -> "EInt(" ++ Int.to_string(n) ++ ")"
@@ -19,7 +19,7 @@ fun expr_to_string(expr) =
     "ELet(" ++ var ++ ", " ++ expr ++ ", " ++ next ++ ")"
 
 
-fun expr_to_kind(env, expr) =
+function expr_to_kind(env, expr) =
   match expr with
   | EUnit -> KUnit
   | EInt(n) -> KInt
@@ -34,7 +34,7 @@ fun expr_to_kind(env, expr) =
     expr_to_kind(env, next)
 
 
-pub fun main() =
+public function main() =
   let expr = ELet("x", EInt(1), ELet("y", EVar("x"), EVar("y"))) in
   let kind = expr_to_kind([], expr) in
   Io.printf("~w\n", [kind])       -- should be KInt

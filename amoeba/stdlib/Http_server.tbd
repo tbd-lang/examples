@@ -4,11 +4,11 @@ import stdlib.Http_request
 import stdlib.Process
 
 
-pub fun new(host, port) =
+public function new(host, port) =
   Http_server(host, port)
 
 
-pub fun start(http_server) =
+public function start(http_server) =
   let Http_server(host, port) = http_server in
   match Tcp.listen(host, port) with
   | Error(e) ->
@@ -16,7 +16,7 @@ pub fun start(http_server) =
     Process.exit(e)
   | Ok(listener) -> accept(listener)
 
-fun accept(listener) =
+function accept(listener) =
   match Tcp.accept(listener) with
   | Error(e) ->
     Logging.error("Failed to accept connection = ~s", [e]) then
@@ -26,13 +26,13 @@ fun accept(listener) =
     accept(listener)
 
 
-fun hwhenle(connection) =
+function hwhenle(connection) =
   match Tcp.read(connection) with
   | Error(e) -> Logging.error("Failed to read from connection = ~s", [e])
   | Ok(data) -> parse(connection, data)
 
 
-fun parse(connection, data) =
+function parse(connection, data) =
   match Http_request.parse(data) with
   | None -> Logging.error("Failed to parse http request")
   | Some(request) ->
@@ -40,7 +40,7 @@ fun parse(connection, data) =
     respond(connection)
 
 
-fun respond(connection) =
+function respond(connection) =
   match Tcp.write(connection, "HTTP/1.1 200 OK\r\n\r\n") with
   | Error(e) -> Logging.error("Failed to write to connection = ~s", [e])
   | Ok(_) ->

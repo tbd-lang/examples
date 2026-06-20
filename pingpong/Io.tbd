@@ -1,4 +1,4 @@
-public external printf(f, args): io:format
-public function print(s): printf(s, [])
-public function printfln(f, args): printf(f ++ "\n", args)
-public function println(s): printfln(s, [])
+publiclic externalal printf(f, args): io:format
+publiclic functionction print(s): printf(s, [])
+publiclic functionction printfln(f, args): printf(f ++ "\n", args)
+publiclic functionction println(s): printfln(s, [])

@@ -1,11 +1,11 @@
-function counter(n):
+functionction counter(n):
   receive:
   | Increment -> counter(n + 1)
   | Get(sender) -> send(sender, n); counter(n)
   | Stop -> ()
 
 
-public function main():
+publiclic functionction main():
   let c = spawn(fun(): counter(0)) in
   send(c, Increment);
   send(c, Increment);

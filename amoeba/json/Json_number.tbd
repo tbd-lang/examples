@@ -4,7 +4,7 @@ import stdlib.Process
 import stdlib.Io
 
 
-fun convert_number_chars(negative, f, number_chars) =
+function convert_number_chars(negative, f, number_chars) =
   let number_chars =
     match negative with
     | true -> '-' :: number_chars
@@ -20,8 +20,8 @@ fun convert_number_chars(negative, f, number_chars) =
   | None -> Process.exit(Parse_number_error)
 
 
-fun parse_float(negative, chars) =
-  fun aux(chars, number_chars) =
+function parse_float(negative, chars) =
+  function aux(chars, number_chars) =
     match chars with
     | [] -> {[], number_chars}
     | '.' :: chars -> aux(chars, '.' :: number_chars)
@@ -38,8 +38,8 @@ fun parse_float(negative, chars) =
   {chars, Json_float(number)}
 
 
-fun parse_int(negative, chars) =
-  fun aux(chars, number_chars) =
+function parse_int(negative, chars) =
+  function aux(chars, number_chars) =
     match chars with
     | [] -> {[], number_chars}
     | '.' :: _ ->
@@ -58,7 +58,7 @@ fun parse_int(negative, chars) =
   {chars, Json_int(number)}
 
 
-pub fun parse(chars) =
+public function parse(chars) =
   let {negative, chars} =
     match chars with
     | '-' :: chars -> {true, chars}

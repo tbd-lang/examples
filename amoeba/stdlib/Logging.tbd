@@ -1,22 +1,22 @@
 import stdlib.Io
 
 
-pub fun info(message, args) =
+public function info(message, args) =
   Io.printfln("[Inf] " ++ message, args)
 
-pub fun info(message) =
+public function info(message) =
   Io.printfln("[Inf] " ++ message, [])
 
 
-pub fun error(message, args) =
+public function error(message, args) =
   Io.printfln("[Err] " ++ message, args)
 
-pub fun error(message) =
+public function error(message) =
   Io.printfln("[Err] " ++ message, [])
 
 
-pub fun debug(message, args) =
+public function debug(message, args) =
   Io.printfln("[Dbg] " ++ message, args)
 
-pub fun debug(message) =
+public function debug(message) =
   Io.printfln("[Dbg] " ++ message, [])
