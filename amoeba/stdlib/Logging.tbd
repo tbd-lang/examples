@@ -20,3 +20,6 @@ public function debug(message, args) =
 
 public function debug(message) =
   Io.printfln("[Dbg] " ++ message, [])
+
+
+public function test() = ()

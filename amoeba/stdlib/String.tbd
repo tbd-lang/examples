@@ -192,11 +192,12 @@ public function to_float(s) =
 -- Example:
 --   join(["a", "b", "c"], ", ")  # => "a, b, c"
 --   join([], ", ")               # => ""
-public function join(parts, sep) =
+public function join(sep, parts) =
   match parts with
   | [] -> ""
   | hd :: tl ->
-    List.fold_left(fun(acc, s) -> acc ++ sep ++ s, hd, tl)
+    List.fold_left(
+      fun(acc, s) -> acc ++ sep ++ s, hd, tl)
 
 
 -- Converts a binary string to a list of bytes.

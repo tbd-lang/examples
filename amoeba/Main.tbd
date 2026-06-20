@@ -1,44 +1,69 @@
 import stdlib.Io
 import stdlib.Int
 import stdlib.List
+import stdlib.String
 
 
 function quote(s) = "\"" ++ s ++ "\""
+function paren(s) = "(" ++ s ++ ")"
+function bracket(s) = "[" ++ s ++ "]"
 
 
-function expr_to_string(expr) =
-    match expr with
-    | EUnit -> "EUnit"
-    | EInt(n) -> "EInt(" ++ Int.to_string(n) ++ ")"
-    | EFloat(f) -> "EFloat(" ++ Int.to_string(f) ++ ")"  -- just for testing
-    | EVar(s) -> "EVar(" ++ quote(s) ++ ")"
-    | ELet(var, expr, next) ->
-        let var = expr_to_string(var) in
-        let expr = expr_to_string(expr) in
-        let next = expr_to_string(next) in
-        "ELet(" ++ var ++ ", " ++ expr ++ ", " ++ next ++ ")"
+public function expr_to_string(expr) =
+  match expr with
+  | EInt(n) -> "EInt" ++ paren(Int.to_string(n))
+  | EFloat(f) -> "EFloat" ++ paren(Int.to_string(f))  -- just for testing
+  | EVar(s) -> "EVar" ++ paren(quote(s))
+  | ELet(name, expr, next) ->
+    let expr = expr_to_string(expr) in
+    let next = expr_to_string(next) in
+    "ELet" ++ paren(quote(name) ++ ", " ++ expr ++ ", " ++ next)
+  | EFunction(name, args, expr, next) ->
+    let args = String.join(", ", args) |> bracket() in
+    let expr = expr_to_string(expr) in
+    let next = expr_to_string(next) in
+    "EFunction" ++ paren(quote(name) ++ ", " ++ args ++ ", " ++ expr ++ ", " ++ next)
 
 
 function expr_to_kind(env, expr) =
-    match expr with
-    | EUnit -> KUnit
-    | EInt(n) -> KInt
-    | EFloat(f) -> KFloat
-    | EVar(s) ->
-        (match List.find(fun({s', _}) -> s' = s, env) with
-        | Some({_, kind}) -> kind
-        | None -> KUnknown)
-    | ELet(name, expr, next) ->
-        let kind = expr_to_kind(env, expr) in
-        let env = {name, kind} :: env in
-        expr_to_kind(env, next)
+  match expr with
+  | EInt(_) -> KInt
+  | EFloat(_) -> KFloat
+  | EVar(s) ->
+    (match List.find(fun({s', _}) -> s' = s, env) with
+    | Some({_, kind}) -> kind
+    | None -> KConflict)
+  | ELet(name, expr, next) ->
+    let kind = expr_to_kind(env, expr) in
+    let env = {name, kind} :: env in
+    expr_to_kind(env, next)
+
+
+function kind_to_string(kind) =
+  match kind with
+  | KInt -> "KInt"
+  | KFloat -> "KFloat"
+  | KFunction(args, return) ->
+    let args =
+      args
+      |> List.map(fun(arg) -> kind_to_string(arg))
+      |> String.join(", ")
+      |> bracket()
+    in
+    "KFunction" ++ paren(args ++ ", " ++ kind_to_string(return))
+  | KConflict -> "KConflict"
 
 
 public function main() =
-    let expr = ELet("x", EInt(1), ELet("y", EVar("x"), EVar("y"))) in
-    let kind = expr_to_kind([], expr) in
-    Io.printf("~w\n", [kind])       -- should be KInt
+  let expr = ELet("x", EInt(1), ELet("y", EVar("x"), EVar("y"))) in
+  let kind = expr_to_kind([], expr) |> kind_to_string() in
+  Io.printf("~s\n", [kind])  -- should be KInt
 
-    then let expr = ELet("x", EFloat(1), ELet("y", EVar("x"), EVar("y"))) in
-    let kind = expr_to_kind([], expr) in
-    Io.printf("~w\n", [kind])       -- should be KFloat
+  then let expr = ELet("x", EFloat(1), ELet("y", EVar("x"), EVar("y"))) in
+  let kind = expr_to_kind([], expr) |> kind_to_string() in
+  Io.printf("~s\n", [kind])  -- should be KFloat
+
+
+public function test() =
+  let expr = EFunction("one", ["x"], EVar("x"), EVar("one")) in
+  Io.printfln("~s", [expr_to_string(expr)])
