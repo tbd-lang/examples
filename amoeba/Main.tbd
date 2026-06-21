@@ -2,6 +2,8 @@ import stdlib.Io
 import stdlib.Int
 import stdlib.List
 import stdlib.String
+import stdlib.Time
+import stdlib.Process
 
 
 function quote(s) = "\"" ++ s ++ "\""
@@ -25,33 +27,53 @@ public function expr_to_string(expr) =
     "EFunction" ++ paren(quote(name) ++ ", " ++ args ++ ", " ++ expr ++ ", " ++ next)
 
 
+function find_reference(env, name) =
+  match List.find(fun({name', _}) -> name' = name, env) with
+  | Some(v) -> v
+  | None -> Process.exit(UknownReference(s))
+
+
 function expr_to_kind(env, expr) =
   match expr with
   | EInt(_) -> KInt
   | EFloat(_) -> KFloat
-  | EVar(s) ->
-    (match List.find(fun({s', _}) -> s' = s, env) with
-    | Some({_, kind}) -> kind
-    | None -> KConflict)
+  | EVar(s) -> let {_, kind} = find_reference(env, s) in kind
   | ELet(name, expr, next) ->
     let kind = expr_to_kind(env, expr) in
     let env = {name, kind} :: env in
     expr_to_kind(env, next)
+  | EFunction(name, args, expr, next) ->
+    let args = List.map(fun(arg) -> KUnknown, args) in
+    let env =
+      List.fold_left(fun(env, arg) -> {arg, KUnknown} :: env, env, args)
+    in
+    let return = expr_to_kind(env, expr) in
+    let env = {name, KFunction(args, return)} :: env in
+    expr_to_kind(env, next)
+  | ECall(name, params) ->
+    let {fname, fkind} = find_reference(env, name) in
+    match fkind with
+    | KFunction(args, return) ->
+      let params = List.map(fun(param) -> expr_to_kind(env, param), params) in
+      -- TODO
+      -- do something where we now map our param types against the args and 
+      -- if the args are KUnknown then we just set them to the param type,
+      -- if not then we raise a conflict error, if it all passes then we replace
+      -- the function type that we now have with the args that we just calculated
+      -- this is kind of "type narrowing" I think...
+    | _ -> Process.exit(ReferenceError("call reference is not a function"))
+
 
 
 function kind_to_string(kind) =
   match kind with
   | KInt -> "KInt"
   | KFloat -> "KFloat"
+  | KVar(s) -> "KVar" ++ paren(s)
   | KFunction(args, return) ->
-    let args =
-      args
-      |> List.map(fun(arg) -> kind_to_string(arg))
-      |> String.join(", ")
-      |> bracket()
-    in
-    "KFunction" ++ paren(args ++ ", " ++ kind_to_string(return))
-  | KConflict -> "KConflict"
+    let args = List.map(fun(arg) -> kind_to_string(arg), args) in
+    "KFunction" ++ paren(paren(String.join(", ", args)) ++ ", " ++ kind_to_string(return))
+  | KUnknown -> "KUnknown"
 
 
 public function main() =
@@ -63,7 +85,6 @@ public function main() =
   let kind = expr_to_kind([], expr) |> kind_to_string() in
   Io.printf("~s\n", [kind])  -- should be KFloat
 
-
-public function test() =
-  let expr = EFunction("one", ["x"], EVar("x"), EVar("one")) in
-  Io.printfln("~s", [expr_to_string(expr)])
+  then let expr = EFunction("one", ["x"], EInt(1), EVar("one")) in
+  let kind = expr_to_kind([], expr) |> kind_to_string() in
+  Io.printf("~s\n", [kind])  -- should be ...
