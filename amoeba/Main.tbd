@@ -6,9 +6,11 @@ import stdlib.Time
 import stdlib.Process
 
 
+function comma(a, b) = a ++ ", " ++ b
 function quote(s) = "\"" ++ s ++ "\""
 function paren(s) = "(" ++ s ++ ")"
 function bracket(s) = "[" ++ s ++ "]"
+function join(l) = String.join(", ", l)
 
 
 public function expr_to_string(expr) =
@@ -19,21 +21,28 @@ public function expr_to_string(expr) =
   | ELet(name, expr, next) ->
     let expr = expr_to_string(expr) in
     let next = expr_to_string(next) in
-    "ELet" ++ paren(quote(name) ++ ", " ++ expr ++ ", " ++ next)
+    "ELet" ++ paren(join([quote(name), expr, next]))
   | EFunction(name, args, expr, next) ->
-    let args = String.join(", ", args) |> bracket() in
+    let args = bracket(join(args)) in
     let expr = expr_to_string(expr) in
     let next = expr_to_string(next) in
-    "EFunction" ++ paren(quote(name) ++ ", " ++ args ++ ", " ++ expr ++ ", " ++ next)
+    "EFunction" ++ paren(join([quote(name), args, expr, next]))
 
 
 function find_reference(env, name) =
   match List.find(fun({name', _}) -> name' = name, env) with
   | Some(v) -> v
-  | None -> Process.exit(UknownReference(s))
+  | None -> Process.exit(UknownReference(name))
 
 
-function expr_to_kind(env, expr) =
+function narrow_type(a, b) =
+  match {a, b} with
+  | {KUnknown, b} -> b
+  | {a, KUnknown} -> a
+  | _ -> Process.exit(TypeConflict)
+
+
+function expr_to_kind(global_env, env, expr) =
   match expr with
   | EInt(_) -> KInt
   | EFloat(_) -> KFloat
@@ -55,14 +64,19 @@ function expr_to_kind(env, expr) =
     match fkind with
     | KFunction(args, return) ->
       let params = List.map(fun(param) -> expr_to_kind(env, param), params) in
-      -- TODO
-      -- do something where we now map our param types against the args and 
-      -- if the args are KUnknown then we just set them to the param type,
-      -- if not then we raise a conflict error, if it all passes then we replace
-      -- the function type that we now have with the args that we just calculated
-      -- this is kind of "type narrowing" I think...
+      let zipped =
+        match List.zip(args, params) with
+        | Some(v) -> v
+        | None ->
+          Process.exit(FunctionInferenceError("args and params not same size"))
+      in
+      let args = List.map(fun({arg, param} -> narrow_type(arg, param), args) in
+      -- TODO: Need to add it to some environment and pass it back? but how do I know
+      -- that the environment I send back is global rather than a local env? maybe I can
+      -- mark something as global and local and then filter after each statement has
+      -- inferred
+      return
     | _ -> Process.exit(ReferenceError("call reference is not a function"))
-
 
 
 function kind_to_string(kind) =
@@ -72,7 +86,7 @@ function kind_to_string(kind) =
   | KVar(s) -> "KVar" ++ paren(s)
   | KFunction(args, return) ->
     let args = List.map(fun(arg) -> kind_to_string(arg), args) in
-    "KFunction" ++ paren(paren(String.join(", ", args)) ++ ", " ++ kind_to_string(return))
+    "KFunction" ++ paren(comma(bracket(join(args)), kind_to_string(return)))
   | KUnknown -> "KUnknown"
 
 
@@ -86,5 +100,9 @@ public function main() =
   Io.printf("~s\n", [kind])  -- should be KFloat
 
   then let expr = EFunction("one", ["x"], EInt(1), EVar("one")) in
+  let kind = expr_to_kind([], expr) |> kind_to_string() in
+  Io.printf("~s\n", [kind])  -- should be ...
+
+  then let expr = EFunction("one", ["x"], EInt(1), ECall("one", [EInt(2)])) in
   let kind = expr_to_kind([], expr) |> kind_to_string() in
   Io.printf("~s\n", [kind])  -- should be ...
